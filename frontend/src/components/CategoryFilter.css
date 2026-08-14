@@ -1,22 +1,33 @@
-/* CategoryFilter.css */
+/* CategoryFilter.css - Mobile Horizontal Scrollable Pills */
 .category-filter {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.category-filter::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .cat-btn {
-  padding: 8px 20px;
+  padding: 8px 18px;
+  min-height: 38px;
   border-radius: 50px;
   border: 1px solid var(--glass-border);
   background: var(--glass);
   color: var(--text-secondary);
   font-family: var(--font);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
   backdrop-filter: blur(10px);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .cat-btn:hover {

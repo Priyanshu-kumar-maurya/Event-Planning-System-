@@ -1,11 +1,11 @@
-/* Auth Page Styles (Login & Signup) */
+/* Auth Page Styles (Login & Signup) - Mobile Responsive */
 .auth-page {
   position: relative;
-  min-height: 90vh;
+  min-height: 88vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 0 60px;
+  padding: 30px 0 50px;
   overflow: hidden;
 }
 
@@ -17,16 +17,16 @@
 }
 
 .auth-orb-1 {
-  width: 500px;
-  height: 500px;
-  top: -100px;
-  left: -100px;
+  width: clamp(250px, 40vw, 500px);
+  height: clamp(250px, 40vw, 500px);
+  top: -80px;
+  left: -80px;
   background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, transparent 70%);
 }
 
 .auth-orb-2 {
-  width: 450px;
-  height: 450px;
+  width: clamp(220px, 35vw, 450px);
+  height: clamp(220px, 35vw, 450px);
   bottom: -50px;
   right: -50px;
   background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, transparent 70%);
@@ -43,10 +43,10 @@
 .auth-card {
   width: 100%;
   max-width: 480px;
-  padding: 40px 36px;
+  padding: 34px 28px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   border: 1px solid var(--border);
   animation: fadeInUp 0.5s ease both;
@@ -57,30 +57,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .auth-logo-badge {
-  font-size: 2.2rem;
-  margin-bottom: 4px;
+  font-size: 2rem;
+  margin-bottom: 2px;
 }
 
 .auth-title {
-  font-size: 1.8rem;
+  font-size: clamp(1.5rem, 3.8vw, 1.8rem);
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.5px;
 }
 
 .auth-subtitle {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .input-with-icon {
@@ -104,10 +104,11 @@
 
 .auth-submit-btn {
   width: 100%;
-  padding: 14px;
-  font-size: 1rem;
+  padding: 13px;
+  min-height: 48px;
+  font-size: 0.98rem;
   justify-content: center;
-  margin-top: 6px;
+  margin-top: 4px;
   box-shadow: 0 4px 20px var(--accent-glow);
 }
 
@@ -115,9 +116,9 @@
   background: rgba(248, 113, 113, 0.12);
   border: 1px solid rgba(248, 113, 113, 0.35);
   border-radius: var(--radius-sm);
-  padding: 12px 16px;
+  padding: 12px 14px;
   color: #f87171;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   text-align: center;
 }
 
@@ -126,14 +127,14 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px dashed var(--border);
   border-radius: var(--radius-sm);
-  padding: 14px 16px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .demo-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -143,7 +144,7 @@
 .demo-btns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .demo-btn {
@@ -151,13 +152,15 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 8px 10px;
+  min-height: 38px;
   border-radius: var(--radius-sm);
   font-family: var(--font);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .demo-btn.admin-demo {
@@ -184,7 +187,7 @@
 
 .auth-footer {
   text-align: center;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
@@ -200,7 +203,8 @@
 
 @media (max-width: 520px) {
   .auth-card {
-    padding: 30px 20px;
+    padding: 24px 16px;
+    border-radius: var(--radius-md);
   }
   .demo-btns {
     grid-template-columns: 1fr;
