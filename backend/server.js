@@ -10,15 +10,28 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ── Middleware ──────────────────────────────
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ── Database Connection ─────────────────────
+let isConnected = false;
+const connectDB = async () => {
+  if (isConnected) return;
+  try {
+    const db = await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/eventhub_db");
+    isConnected = db.connections[0].readyState;
+    console.log("✅ Connected to MongoDB");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err.message);
+  }
+};
+
+// Middleware to ensure DB connection per request (for serverless environments)
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 // ── Routes ──────────────────────────────────
 app.use("/api/events", eventRoutes);
@@ -28,28 +41,8 @@ app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "🎉 EventHub API with Auth & Admin is running!",
+    message: "🎉 EventHub API is running!",
     version: "2.0.0",
-    endpoints: {
-      auth: {
-        register: "POST   /api/auth/register",
-        login: "POST   /api/auth/login",
-        me: "GET    /api/auth/me",
-        users: "GET    /api/auth/users (Admin)",
-        adminStats: "GET    /api/auth/admin-stats (Admin)",
-      },
-      events: {
-        getAllEvents: "GET    /api/events",
-        getEvent: "GET    /api/events/:id",
-        createEvent: "POST   /api/events",
-        updateEvent: "PUT    /api/events/:id",
-        deleteEvent: "DELETE /api/events/:id",
-        registerEvent: "POST   /api/events/:id/register",
-        unregisterEvent: "POST   /api/events/:id/unregister",
-        userRegistered: "GET    /api/events/user/registered",
-        userCreated: "GET    /api/events/user/created",
-      },
-    },
   });
 });
 
@@ -64,18 +57,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: "Internal server error" });
 });
 
-// ── Connect to MongoDB & Start Server ───────
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ Connected to MongoDB:", process.env.MONGO_URI);
+// ── Local Server Start ──────────────────────
+if (require.main === module) {
+  connectDB().then(() => {
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`📡 Event API: http://localhost:${PORT}/api/events`);
-      console.log(`🔐 Auth API: http://localhost:${PORT}/api/auth`);
     });
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection failed:", err.message);
-    process.exit(1);
   });
+}
+
+module.exports = app;

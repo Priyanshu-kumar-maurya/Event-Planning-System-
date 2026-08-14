@@ -1,7 +1,11 @@
 // src/services/api.js
 // Central API service communicating with Express + MongoDB backend
 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "/api");
 
 // Helper with automatic JWT Bearer token attachment
 async function request(endpoint, options = {}) {
