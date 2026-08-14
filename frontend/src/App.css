@@ -1,0 +1,6 @@
+/* App.css — minimal, global index.css handles most styling */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
