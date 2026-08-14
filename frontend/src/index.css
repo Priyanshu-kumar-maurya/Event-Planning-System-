@@ -87,7 +87,7 @@ body {
   border-radius: var(--radius-lg);
 }
 
-/* ===== Buttons (Touch-Friendly) ===== */
+/* ===== Buttons ===== */
 .btn-primary {
   background: var(--accent-gradient);
   color: #fff;
@@ -183,7 +183,7 @@ body {
   border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
-/* ===== Page Layout (Guarantees content is NEVER hidden behind fixed navbar) ===== */
+/* ===== Page Layout (Strict navbar clearance) ===== */
 .page-wrapper {
   min-height: 100vh;
   padding-top: var(--navbar-height);

@@ -479,10 +479,12 @@
 /* Unauthorized prompt */
 .admin-unauthorized {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 80vh;
-  padding: 20px 14px;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding-top: calc(var(--navbar-height) + 36px) !important;
+  padding-bottom: 60px;
 }
 
 .unauth-card {

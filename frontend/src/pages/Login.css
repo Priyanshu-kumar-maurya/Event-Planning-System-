@@ -1,11 +1,13 @@
-/* Auth Page Styles (Login & Signup) - Mobile Responsive */
+/* Auth Page Styles (Login & Signup & Unauthorized states) */
 .auth-page {
   position: relative;
-  min-height: calc(88vh - var(--navbar-height));
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
-  padding: 36px 0 60px;
+  padding-top: calc(var(--navbar-height) + 36px) !important;
+  padding-bottom: 60px;
   overflow: hidden;
   width: 100%;
 }
@@ -20,7 +22,7 @@
 .auth-orb-1 {
   width: clamp(250px, 40vw, 500px);
   height: clamp(250px, 40vw, 500px);
-  top: -80px;
+  top: 0px;
   left: -80px;
   background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, transparent 70%);
 }
@@ -39,13 +41,13 @@
   width: 100%;
   position: relative;
   z-index: 1;
-  padding: 10px 0;
+  margin: 0 auto;
 }
 
 .auth-card {
   width: 100%;
   max-width: 480px;
-  padding: 36px 30px;
+  padding: 38px 30px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -63,20 +65,22 @@
 }
 
 .auth-logo-badge {
-  font-size: 2rem;
-  margin-bottom: 2px;
+  font-size: 2.2rem;
+  margin-bottom: 4px;
 }
 
 .auth-title {
-  font-size: clamp(1.5rem, 3.8vw, 1.8rem);
+  font-size: clamp(1.5rem, 4vw, 1.9rem);
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .auth-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .auth-form {
@@ -129,10 +133,10 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px dashed var(--border);
   border-radius: var(--radius-sm);
-  padding: 12px 14px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .demo-label {
@@ -146,7 +150,7 @@
 .demo-btns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
 .demo-btn {
@@ -154,11 +158,11 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 10px;
-  min-height: 38px;
+  padding: 10px 12px;
+  min-height: 40px;
   border-radius: var(--radius-sm);
   font-family: var(--font);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
@@ -205,10 +209,11 @@
 
 @media (max-width: 520px) {
   .auth-page {
-    padding: 24px 0 40px;
+    padding-top: calc(var(--navbar-height) + 24px) !important;
+    padding-bottom: 40px;
   }
   .auth-card {
-    padding: 26px 18px;
+    padding: 28px 18px;
     border-radius: var(--radius-md);
   }
   .demo-btns {
