@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiMail, FiLock, FiLogIn, FiShield, FiUser, FiLoader, FiArrowRight } from "react-icons/fi";
+import { FiMail, FiLock, FiLogIn, FiLoader, FiArrowRight } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { loginUser } from "../services/api";
 import "./Login.css";
@@ -38,19 +38,6 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Demo auto-fill helpers
-  const fillAdmin = () => {
-    setEmail("admin@eventhub.com");
-    setPassword("admin123");
-    setError(null);
-  };
-
-  const fillStudent = () => {
-    setEmail("rahul@nsut.ac.in");
-    setPassword("user123");
-    setError(null);
   };
 
   return (
@@ -129,29 +116,6 @@ export default function Login() {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Logins for Testing */}
-          <div className="demo-logins-box">
-            <span className="demo-label">⚡ Quick 1-Click Demo Login:</span>
-            <div className="demo-btns">
-              <button
-                type="button"
-                className="demo-btn admin-demo"
-                onClick={fillAdmin}
-                title="Fill Admin credentials"
-              >
-                <FiShield /> Admin Login
-              </button>
-              <button
-                type="button"
-                className="demo-btn student-demo"
-                onClick={fillStudent}
-                title="Fill Student credentials"
-              >
-                <FiUser /> Student Login
-              </button>
-            </div>
-          </div>
 
           {/* Footer */}
           <div className="auth-footer">

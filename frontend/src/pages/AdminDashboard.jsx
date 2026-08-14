@@ -82,20 +82,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Quick switch to admin login helper
-  const handleQuickAdminLogin = () => {
-    login(
-      {
-        _id: "admin-default",
-        name: "Admin Officer",
-        email: "admin@eventhub.com",
-        role: "admin",
-        college: "NSUT Admin Office",
-      },
-      "demo-admin-token"
-    );
-  };
-
   // Filtered lists
   const filteredEvents = events.filter(
     (e) =>
@@ -137,12 +123,9 @@ export default function AdminDashboard() {
               The Admin Dashboard is restricted to campus organizers and system administrators.
             </p>
             <div className="unauth-actions">
-              <Link to="/login" className="btn-primary">
+              <Link to="/login" className="btn-primary" style={{ width: "100%", justifyContent: "center" }}>
                 Log In with Admin Account
               </Link>
-              <button onClick={handleQuickAdminLogin} className="btn-secondary">
-                ⚡ 1-Click Demo Admin Login
-              </button>
             </div>
           </div>
         </div>
