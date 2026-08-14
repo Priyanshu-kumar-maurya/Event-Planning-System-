@@ -3,10 +3,10 @@
 /* ── HERO ── */
 .hero {
   position: relative;
-  min-height: 90vh;
+  min-height: calc(90vh - var(--navbar-height));
   display: flex;
   align-items: center;
-  padding: 60px 0 50px;
+  padding: 30px 0 50px;
   overflow: hidden;
 }
 
@@ -399,7 +399,7 @@
 
 @media (max-width: 650px) {
   .hero {
-    padding: 40px 0 40px;
+    padding: 24px 0 35px;
   }
   .hero-actions {
     flex-direction: column;

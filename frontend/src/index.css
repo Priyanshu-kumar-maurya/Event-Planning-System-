@@ -31,6 +31,7 @@
   --radius-lg: 20px;
   --radius-xl: 28px;
 
+  --navbar-height: 72px;
   --font: 'Outfit', sans-serif;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -182,10 +183,10 @@ body {
   border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
-/* ===== Page Layout ===== */
+/* ===== Page Layout (Guarantees content is NEVER hidden behind fixed navbar) ===== */
 .page-wrapper {
   min-height: 100vh;
-  padding-top: 72px;
+  padding-top: var(--navbar-height);
   width: 100%;
 }
 
@@ -235,7 +236,7 @@ body {
 .animate-fadeIn    { animation: fadeIn 0.4s ease forwards; }
 .animate-float     { animation: float 4s ease-in-out infinite; }
 
-/* ===== Form Styles (Mobile Optimized) ===== */
+/* ===== Form Styles ===== */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -260,7 +261,7 @@ body {
   border-radius: var(--radius-sm);
   padding: 12px 16px;
   font-family: var(--font);
-  font-size: 0.95rem; /* Prevents auto-zoom on iOS safari */
+  font-size: 0.95rem;
   color: var(--text-primary);
   outline: none;
   transition: var(--transition);
@@ -291,6 +292,9 @@ body {
 
 /* ===== Responsive Utilities ===== */
 @media (max-width: 768px) {
+  :root {
+    --navbar-height: 68px;
+  }
   .container { padding: 0 16px; }
   .btn-primary, .btn-secondary {
     padding: 10px 20px;

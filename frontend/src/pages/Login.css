@@ -1,12 +1,13 @@
 /* Auth Page Styles (Login & Signup) - Mobile Responsive */
 .auth-page {
   position: relative;
-  min-height: 88vh;
+  min-height: calc(88vh - var(--navbar-height));
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px 0 50px;
+  padding: 36px 0 60px;
   overflow: hidden;
+  width: 100%;
 }
 
 .auth-orb {
@@ -38,12 +39,13 @@
   width: 100%;
   position: relative;
   z-index: 1;
+  padding: 10px 0;
 }
 
 .auth-card {
   width: 100%;
   max-width: 480px;
-  padding: 34px 28px;
+  padding: 36px 30px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -202,8 +204,11 @@
 }
 
 @media (max-width: 520px) {
+  .auth-page {
+    padding: 24px 0 40px;
+  }
   .auth-card {
-    padding: 24px 16px;
+    padding: 26px 18px;
     border-radius: var(--radius-md);
   }
   .demo-btns {

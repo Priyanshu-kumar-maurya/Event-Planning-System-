@@ -31,7 +31,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="home-page">
+    <div className="page-wrapper home-page">
       {/* ── HERO ── */}
       <section className="hero">
         <div className="hero-orb hero-orb-1" />
