@@ -33,9 +33,12 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// ── Routes ──────────────────────────────────
+// ── Routes (Both with and without /api prefix for Vercel/local compatibility) ──
 app.use("/api/events", eventRoutes);
+app.use("/events", eventRoutes);
+
 app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes);
 
 // Health check
 app.get("/", (req, res) => {

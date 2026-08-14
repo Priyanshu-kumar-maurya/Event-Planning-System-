@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { FiSearch, FiSliders, FiLoader } from "react-icons/fi";
 import EventCard from "../components/EventCard";
 import CategoryFilter from "../components/CategoryFilter";
 import { getEvents } from "../services/api";
-import { categories } from "../data/mockEvents";
+import { categories, mockEvents } from "../data/mockEvents";
 import "./Events.css";
 
 export default function Events() {
@@ -14,7 +14,7 @@ export default function Events() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("date");
 
-  // Fetch from backend
+  // Fetch from backend or fallback
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -25,18 +25,20 @@ export default function Events() {
           search: searchQuery,
           sort: sortBy,
         });
-        setEvents(data);
+        setEvents(Array.isArray(data) ? data : mockEvents);
       } catch (err) {
-        setError(err.message);
+        console.warn("Fetch error, displaying fallback:", err);
+        setEvents(mockEvents);
       } finally {
         setLoading(false);
       }
     };
 
-    // Debounce search query
     const timer = setTimeout(fetchEvents, 300);
     return () => clearTimeout(timer);
   }, [activeCategory, searchQuery, sortBy]);
+
+  const safeEvents = Array.isArray(events) ? events : mockEvents;
 
   return (
     <div className="page-wrapper events-page">
@@ -91,7 +93,7 @@ export default function Events() {
             onChange={setActiveCategory}
           />
           {!loading && (
-            <span className="events-count">{events.length} events</span>
+            <span className="events-count">{safeEvents.length} events</span>
           )}
         </div>
 
@@ -103,36 +105,31 @@ export default function Events() {
           </div>
         )}
 
-        {/* Error */}
-        {error && !loading && (
-          <div className="events-error">
-            <div className="empty-emoji">⚠️</div>
-            <h3>Could not load events</h3>
-            <p>{error}</p>
-            <p style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
-              Make sure the backend is running: <code>node server.js</code>
-            </p>
-          </div>
-        )}
-
         {/* Grid */}
-        {!loading && !error && events.length > 0 && (
+        {!loading && safeEvents.length > 0 && (
           <div className="events-grid-full">
-            {events.map((event, i) => (
-              <EventCard key={event._id} event={event} delay={i * 80} />
+            {safeEvents.map((event, i) => (
+              <EventCard
+                key={event._id || event.id || i}
+                event={event}
+                delay={i * 80}
+              />
             ))}
           </div>
         )}
 
         {/* Empty */}
-        {!loading && !error && events.length === 0 && (
+        {!loading && safeEvents.length === 0 && (
           <div className="events-empty">
             <div className="empty-emoji">🔍</div>
             <h3>No events found</h3>
             <p>Try adjusting your search or filter.</p>
             <button
               className="btn-primary"
-              onClick={() => { setSearchQuery(""); setActiveCategory("All"); }}
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory("All");
+              }}
             >
               Clear Filters
             </button>

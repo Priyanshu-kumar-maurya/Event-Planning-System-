@@ -25,7 +25,9 @@ export default function Home() {
 
   useEffect(() => {
     getEvents({ sort: "popular" })
-      .then((data) => setFeaturedEvents(data.slice(0, 3)))
+      .then((data) => {
+        setFeaturedEvents(Array.isArray(data) ? data.slice(0, 3) : []);
+      })
       .catch(() => setFeaturedEvents([]))
       .finally(() => setLoading(false));
   }, []);
@@ -134,10 +136,10 @@ export default function Home() {
               <FiLoader className="spin-icon" />
               <span>Loading from MongoDB...</span>
             </div>
-          ) : featuredEvents.length > 0 ? (
+          ) : Array.isArray(featuredEvents) && featuredEvents.length > 0 ? (
             <div className="events-grid">
               {featuredEvents.map((event, i) => (
-                <EventCard key={event._id} event={event} delay={i * 100} />
+                <EventCard key={event._id || event.id || i} event={event} delay={i * 100} />
               ))}
             </div>
           ) : (

@@ -45,13 +45,14 @@ export default function Dashboard() {
           getUserRegisteredEvents().catch(() => []),
           getUserCreatedEvents().catch(() => []),
         ]);
-        setRegisteredEvents(regData);
-        setCreatedEvents(createdData);
+        setRegisteredEvents(Array.isArray(regData) ? regData : []);
+        setCreatedEvents(Array.isArray(createdData) ? createdData : []);
       } else {
         // Fallback for non-logged-in visitors: preview first few events
         const all = await getEvents();
-        setRegisteredEvents(all.slice(0, 2));
-        setCreatedEvents(all.slice(2, 4));
+        const safeAll = Array.isArray(all) ? all : [];
+        setRegisteredEvents(safeAll.slice(0, 2));
+        setCreatedEvents(safeAll.slice(2, 4));
       }
     } catch (err) {
       setError(err.message);

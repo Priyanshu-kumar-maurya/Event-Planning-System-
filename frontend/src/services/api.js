@@ -37,11 +37,14 @@ async function request(endpoint, options = {}) {
       data = await res.json();
     } else {
       const text = await res.text();
-      // If server returned non-JSON (like 404/500 HTML page)
-      if (!res.ok) {
-        throw new Error(`Server returned error (${res.status}): Please make sure backend is running.`);
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        if (!res.ok) {
+          throw new Error(`Server response error (${res.status})`);
+        }
+        return { success: true, data: text };
       }
-      return { success: true, data: text };
     }
 
     if (!res.ok) {
@@ -50,7 +53,7 @@ async function request(endpoint, options = {}) {
 
     return data;
   } catch (err) {
-    throw new Error(err.message || "Network error — is the backend server running?");
+    throw new Error(err.message || "Network error");
   }
 }
 
@@ -79,7 +82,7 @@ export async function getMe() {
 export async function getAllUsers() {
   try {
     const res = await request("/auth/users");
-    return res.data || [];
+    return Array.isArray(res.data) ? res.data : [];
   } catch (err) {
     return [];
   }
@@ -88,7 +91,7 @@ export async function getAllUsers() {
 export async function getAdminStats() {
   try {
     const res = await request("/auth/admin-stats");
-    return res.data;
+    return res.data || null;
   } catch (err) {
     return null;
   }
@@ -96,6 +99,7 @@ export async function getAdminStats() {
 
 // ── Events APIs ─────────────────────────────────────────────
 export async function getEvents(params = {}) {
+  let list = [];
   try {
     const query = new URLSearchParams();
     if (params.category && params.category !== "All") query.set("category", params.category);
@@ -105,39 +109,53 @@ export async function getEvents(params = {}) {
     const qs = query.toString() ? `?${query.toString()}` : "";
     const res = await request(`/events${qs}`);
 
-    if (res.data && Array.isArray(res.data) && res.data.length > 0) {
-      return res.data;
+    if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+      list = res.data;
+    } else if (res && Array.isArray(res)) {
+      list = res;
+    } else {
+      list = mockEvents;
     }
-    // Fallback if empty array returned from fresh DB
-    return res.data || mockEvents;
   } catch (err) {
-    console.warn("Backend unavailable, using fallback mock data:", err.message);
-    // If backend connection fails, filter and return mock data smoothly
-    let list = [...mockEvents];
-    if (params.category && params.category !== "All") {
-      list = list.filter((e) => e.category === params.category);
-    }
-    if (params.search) {
-      const s = params.search.toLowerCase();
-      list = list.filter(
-        (e) =>
-          e.title.toLowerCase().includes(s) ||
-          e.description.toLowerCase().includes(s)
-      );
-    }
-    return list;
+    console.warn("Using fallback mock event data:", err.message);
+    list = mockEvents;
   }
+
+  // Ensure list is strictly an Array
+  if (!Array.isArray(list)) {
+    list = mockEvents;
+  }
+
+  // Apply filters in memory
+  if (params.category && params.category !== "All") {
+    list = list.filter((e) => e.category === params.category);
+  }
+  if (params.search) {
+    const s = params.search.toLowerCase();
+    list = list.filter(
+      (e) =>
+        e.title?.toLowerCase().includes(s) ||
+        e.description?.toLowerCase().includes(s) ||
+        e.category?.toLowerCase().includes(s)
+    );
+  }
+
+  return list;
 }
 
 export async function getEventById(id) {
   try {
     const res = await request(`/events/${id}`);
-    return res.data;
-  } catch (err) {
-    // Fallback to finding in mock events by id or _id
+    if (res && res.data && typeof res.data === "object") {
+      return res.data;
+    }
     const fallback = mockEvents.find((e) => e.id === id || e._id === id);
     if (fallback) return fallback;
-    throw err;
+    return mockEvents[0];
+  } catch (err) {
+    const fallback = mockEvents.find((e) => e.id === id || e._id === id);
+    if (fallback) return fallback;
+    return mockEvents[0];
   }
 }
 
@@ -181,7 +199,7 @@ export async function unregisterFromEvent(id, attendeeInfo = {}) {
 export async function getUserRegisteredEvents() {
   try {
     const res = await request("/events/user/registered");
-    return res.data || [];
+    return Array.isArray(res.data) ? res.data : [];
   } catch (err) {
     return [];
   }
@@ -190,7 +208,7 @@ export async function getUserRegisteredEvents() {
 export async function getUserCreatedEvents() {
   try {
     const res = await request("/events/user/created");
-    return res.data || [];
+    return Array.isArray(res.data) ? res.data : [];
   } catch (err) {
     return [];
   }
