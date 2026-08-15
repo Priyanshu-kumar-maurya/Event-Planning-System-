@@ -13,6 +13,7 @@ import {
   FiLoader,
   FiUser,
   FiShield,
+  FiEdit2,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -227,7 +228,7 @@ export default function Dashboard() {
                       </div>
 
                       <div className="dash-event-actions">
-                        <Link to={`/events/${event._id}`} className="btn-secondary dash-view-btn">
+                        <Link to={`/events/${event._id || event.id}`} className="btn-secondary dash-view-btn">
                           View Details <FiArrowRight />
                         </Link>
                         {activeTab === "registered" && (
@@ -239,12 +240,28 @@ export default function Dashboard() {
                           </button>
                         )}
                         {activeTab === "created" && (
-                          <button
-                            className="unregister-btn"
-                            onClick={() => handleDeleteCreated(event._id, event.title)}
-                          >
-                            <FiTrash2 /> Delete
-                          </button>
+                          <>
+                            <Link
+                              to={`/events/${event._id || event.id}/edit`}
+                              className="btn-secondary"
+                              style={{
+                                borderColor: "var(--accent)",
+                                color: "var(--accent-light)",
+                                padding: "8px 14px",
+                                fontSize: "0.82rem",
+                                gap: "5px",
+                                textDecoration: "none",
+                              }}
+                            >
+                              <FiEdit2 /> Edit
+                            </Link>
+                            <button
+                              className="unregister-btn"
+                              onClick={() => handleDeleteCreated(event._id, event.title)}
+                            >
+                              <FiTrash2 /> Delete
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>

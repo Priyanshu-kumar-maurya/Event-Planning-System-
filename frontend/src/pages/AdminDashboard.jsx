@@ -17,6 +17,7 @@ import {
   FiBook,
   FiClock,
   FiCheckCircle,
+  FiEdit2,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { getEvents, getAllUsers, getAdminStats, deleteEvent } from "../services/api";
@@ -320,6 +321,13 @@ export default function AdminDashboard() {
                         </td>
                         <td>
                           <div className="table-actions">
+                            <Link
+                              to={`/events/${ev._id || ev.id}/edit`}
+                              className="action-icon-btn edit-btn"
+                              title="Edit Event (Time, Date, Details)"
+                            >
+                              <FiEdit2 />
+                            </Link>
                             <button
                               className="action-icon-btn view-btn"
                               title="View Attendees"
@@ -331,7 +339,7 @@ export default function AdminDashboard() {
                               <FiUsers />
                             </button>
                             <Link
-                              to={`/events/${ev._id}`}
+                              to={`/events/${ev._id || ev.id}`}
                               className="action-icon-btn link-btn"
                               title="View Public Page"
                             >

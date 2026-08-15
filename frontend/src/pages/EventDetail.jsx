@@ -15,6 +15,7 @@ import {
   FiLogIn,
   FiLock,
   FiUserPlus,
+  FiEdit2,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { getEventById, registerForEvent } from "../services/api";
@@ -117,12 +118,37 @@ export default function EventDetail() {
   const percentFull = Math.round((regCount / event.seats) * 100);
   const isFull = spotsLeft <= 0;
 
+  const canEdit =
+    user &&
+    (isAdmin ||
+      user.role === "admin" ||
+      event.createdBy === user._id ||
+      (event.creatorEmail && event.creatorEmail.toLowerCase() === user.email?.toLowerCase()) ||
+      event.organizer === user.name);
+
   return (
     <div className="page-wrapper event-detail-page">
-      <div className="container">
+      <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
         <button className="back-btn" onClick={() => navigate(-1)}>
           <FiArrowLeft /> Back
         </button>
+
+        {canEdit && (
+          <Link
+            to={`/events/${event._id || event.id}/edit`}
+            className="btn-secondary"
+            style={{
+              borderColor: "var(--accent)",
+              color: "var(--accent-light)",
+              background: "rgba(124, 58, 237, 0.15)",
+              gap: "6px",
+              padding: "8px 18px",
+              fontSize: "0.88rem",
+            }}
+          >
+            <FiEdit2 /> Edit Event (Time, Date, Details)
+          </Link>
+        )}
       </div>
 
       {/* Hero Banner */}
@@ -136,6 +162,23 @@ export default function EventDetail() {
               <span className="badge badge-green">Free Entry</span>
             ) : (
               <span className="badge badge-pink">₹{event.price} Ticket</span>
+            )}
+            {canEdit && (
+              <Link
+                to={`/events/${event._id || event.id}/edit`}
+                className="badge"
+                style={{
+                  background: "rgba(124, 58, 237, 0.4)",
+                  color: "#fff",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                <FiEdit2 size={12} /> Edit Details
+              </Link>
             )}
           </div>
           <h1 className="detail-title">{event.title}</h1>
