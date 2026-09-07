@@ -15,6 +15,7 @@ import {
   FiArrowLeft,
   FiSave,
   FiEye,
+  FiUser,
 } from "react-icons/fi";
 import { categories } from "../data/mockEvents";
 import { getEventById, updateEvent } from "../services/api";
@@ -77,12 +78,10 @@ export default function EditEvent() {
           throw new Error("Event not found");
         }
 
-        // Format tags
         const tagsString = Array.isArray(data.tags)
           ? data.tags.join(", ")
           : data.tags || "";
 
-        // Format date to YYYY-MM-DD for input[type="date"]
         let formattedDate = data.date || "";
         if (formattedDate && formattedDate.includes("T")) {
           formattedDate = formattedDate.split("T")[0];
@@ -194,50 +193,62 @@ export default function EditEvent() {
   }
 
   const previewImage = normalizeImageUrl(form.image, form.category);
+  const tagList = form.tags
+    ? form.tags.split(",").map((t) => t.trim()).filter(Boolean)
+    : [];
 
   return (
     <div className="page-wrapper create-page">
-      {/* Header */}
+      {/* ── HEADER ── */}
       <div className="create-header">
         <div className="create-header-orb" />
         <div className="container create-header-inner">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", flexWrap: "wrap", gap: "12px" }}>
+          <div className="create-header-topbar">
             <div>
-              <p className="section-label">✏️ Update Event</p>
-              <h1 className="section-title">Edit Event Details</h1>
+              <p className="section-label">✏️ EDIT MODE</p>
+              <h1 className="section-title">Update Event Details</h1>
               <p className="section-subtitle">
-                Change event date, timing, location, description, image or capacity. All updates sync to MongoDB.
+                Modify timing, venue, description, cover image, or capacity. Real-time updates sync to MongoDB.
               </p>
             </div>
-            <Link to={`/events/${id}`} className="btn-secondary" style={{ gap: "6px" }}>
-              <FiEye /> View Event Page
-            </Link>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <Link to={`/events/${id}`} className="header-back-link">
+                <FiEye /> View Live Event
+              </Link>
+              <button
+                type="button"
+                className="header-back-link"
+                onClick={() => navigate(-1)}
+              >
+                <FiArrowLeft /> Back
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container create-body">
-        {/* Success Modal / Banner */}
+      <div className="container">
+        {/* Success Banner */}
         {savedSuccess && (
-          <div className="success-banner animate-fadeIn" style={{ marginBottom: "24px" }}>
+          <div className="success-banner animate-fadeIn" style={{ marginTop: "24px", marginBottom: "8px" }}>
             <FiCheckCircle size={28} />
             <div>
-              <strong>Event Updated Successfully! 🎉</strong>
-              <div>Redirecting to the event page...</div>
+              <strong>Event Changes Saved Successfully! 🎉</strong>
+              <div>Redirecting you to the public event page...</div>
             </div>
           </div>
         )}
 
         {/* Error */}
         {apiError && (
-          <div className="auth-error-banner animate-fadeIn" style={{ marginBottom: "20px" }}>
+          <div className="auth-error-banner animate-fadeIn" style={{ marginTop: "24px", marginBottom: "8px" }}>
             ⚠️ {apiError}
           </div>
         )}
 
         <div className="create-layout">
-          {/* ── FORM ── */}
-          <form className="create-form glass-card" onSubmit={handleSubmit} noValidate>
+          {/* ── FORM SECTIONS ── */}
+          <form className="create-form" onSubmit={handleSubmit} noValidate>
             {/* Section 1: Basic Info */}
             <div className="form-section">
               <h3 className="form-section-title">
@@ -261,42 +272,44 @@ export default function EditEvent() {
                 {errors.title && <span className="form-error">{errors.title}</span>}
               </div>
 
-              {/* Category */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="category">
-                  Category <span className="req">*</span>
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={form.category}
-                  onChange={handleChange}
-                  className={`form-select ${errors.category ? "error" : ""}`}
-                >
-                  <option value="">Select a category</option>
-                  {categories.filter((c) => c !== "All").map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-                {errors.category && <span className="form-error">{errors.category}</span>}
-              </div>
+              <div className="form-row">
+                {/* Category */}
+                <div className="form-group">
+                  <label className="form-label" htmlFor="category">
+                    Category <span className="req">*</span>
+                  </label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={form.category}
+                    onChange={handleChange}
+                    className={`form-select ${errors.category ? "error" : ""}`}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.filter((c) => c !== "All").map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category && <span className="form-error">{errors.category}</span>}
+                </div>
 
-              {/* Organizer */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="organizer">
-                  Organizer / Society Name
-                </label>
-                <input
-                  id="organizer"
-                  type="text"
-                  name="organizer"
-                  placeholder="e.g. IEEE Student Branch"
-                  value={form.organizer}
-                  onChange={handleChange}
-                  className="form-input"
-                />
+                {/* Organizer */}
+                <div className="form-group">
+                  <label className="form-label" htmlFor="organizer">
+                    Organizer / Society Name
+                  </label>
+                  <input
+                    id="organizer"
+                    type="text"
+                    name="organizer"
+                    placeholder="e.g. IEEE Student Branch"
+                    value={form.organizer}
+                    onChange={handleChange}
+                    className="form-input"
+                  />
+                </div>
               </div>
             </div>
 
@@ -366,7 +379,7 @@ export default function EditEvent() {
             {/* Section 3: Description */}
             <div className="form-section">
               <h3 className="form-section-title">
-                <FiAlignLeft /> Description & Details
+                <FiAlignLeft /> Description & Agenda
               </h3>
 
               <div className="form-group">
@@ -444,7 +457,7 @@ export default function EditEvent() {
               {/* Image URL */}
               <div className="form-group">
                 <label className="form-label" htmlFor="image">
-                  Cover Image URL (Instagram, Drive, or Web Link)
+                  Cover Image URL (Instagram, Drive, Unsplash, or Direct link)
                 </label>
                 <input
                   id="image"
@@ -455,9 +468,9 @@ export default function EditEvent() {
                   onChange={handleChange}
                   className="form-input"
                 />
-                <small style={{ color: "var(--text-muted)", fontSize: "0.8rem", marginTop: "5px", display: "block" }}>
-                  📸 Instagram post links (<code>https://www.instagram.com/p/...</code>), Google Drive, Unsplash, etc. direct preview aur save honge.
-                </small>
+                <p className="input-tip">
+                  📸 Instagram links (<code>instagram.com/p/...</code>), Google Drive, Unsplash, etc. automatic load honge.
+                </p>
               </div>
 
               {/* Quick Image Presets */}
@@ -478,7 +491,7 @@ export default function EditEvent() {
               </div>
 
               {/* Tags */}
-              <div className="form-group" style={{ marginTop: "16px" }}>
+              <div className="form-group" style={{ marginTop: "14px" }}>
                 <label className="form-label" htmlFor="tags">
                   Tags (comma separated)
                 </label>
@@ -526,10 +539,16 @@ export default function EditEvent() {
             </div>
           </form>
 
-          {/* ── LIVE PREVIEW CARD ── */}
-          <div className="create-preview-wrap">
-            <h4 className="preview-label">Live Preview</h4>
-            <div className="preview-card glass-card">
+          {/* ── LIVE PREVIEW SIDEBAR ── */}
+          <div className="create-preview">
+            <div className="preview-header-bar">
+              <span className="preview-label-tag">
+                <span className="live-pulse-dot" /> Live Card Preview
+              </span>
+              <span className="preview-live-hint">Updates in real-time</span>
+            </div>
+
+            <div className="preview-card">
               <div className="preview-img-wrap">
                 <img
                   src={previewImage}
@@ -538,7 +557,9 @@ export default function EditEvent() {
                   referrerPolicy="no-referrer"
                   onError={(e) => handleImageError(e, form.category)}
                 />
-                <div className="preview-badges">
+                <div className="preview-img-overlay" />
+
+                <div className="preview-badges-overlay">
                   <span className="badge badge-purple">
                     {form.category || "Category"}
                   </span>
@@ -550,35 +571,67 @@ export default function EditEvent() {
                 </div>
               </div>
 
-              <div className="preview-content">
+              <div className="preview-body">
                 <h3 className="preview-title">
                   {form.title || "Your Event Title Here"}
                 </h3>
-                <p className="preview-organizer">
-                  By {form.organizer || user?.name || "Campus Organizer"}
-                </p>
 
-                <div className="preview-meta">
-                  <span>
-                    <FiCalendar /> {form.date || "Date"}
-                  </span>
-                  <span>
-                    <FiClock /> {form.time || "Time"}
-                  </span>
-                  <span>
-                    <FiMapPin /> {form.location || "Venue"}
-                  </span>
-                  <span>
-                    <FiUsers /> {form.seats || 0} seats
-                  </span>
+                <div className="preview-organizer-pill">
+                  <FiUser /> Organized by {form.organizer || user?.name || "Campus Organizer"}
+                </div>
+
+                <div className="preview-meta-grid">
+                  <div className="preview-meta-item">
+                    <FiCalendar />
+                    <span>
+                      {form.date
+                        ? new Date(form.date).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : "Date"}
+                    </span>
+                  </div>
+                  <div className="preview-meta-item">
+                    <FiClock />
+                    <span>{form.time || "Timing"}</span>
+                  </div>
+                  <div className="preview-meta-item">
+                    <FiMapPin />
+                    <span>{form.location ? form.location.split(",")[0] : "Venue"}</span>
+                  </div>
+                  <div className="preview-meta-item">
+                    <FiUsers />
+                    <span>{form.seats || 0} seats</span>
+                  </div>
                 </div>
 
                 {form.description && (
                   <p className="preview-desc">
-                    {form.description.slice(0, 100)}
-                    {form.description.length > 100 ? "..." : ""}
+                    {form.description}
                   </p>
                 )}
+
+                {tagList.length > 0 && (
+                  <div className="preview-tags-wrap">
+                    {tagList.map((t) => (
+                      <span key={t} className="preview-tag-pill">
+                        #{t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div className="preview-progress-mock">
+                  <div className="preview-progress-text">
+                    <span>Capacity: {form.seats || 0} Total</span>
+                    <span style={{ color: "#4ade80" }}>Open for registrations</span>
+                  </div>
+                  <div className="progress-bar mini">
+                    <div className="progress-fill" style={{ width: "25%" }} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
