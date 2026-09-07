@@ -23,6 +23,7 @@ import {
   deleteEvent,
   unregisterFromEvent,
 } from "../services/api";
+import { normalizeImageUrl, handleImageError } from "../utils/imageHelper";
 import "./Dashboard.css";
 
 export default function Dashboard() {
@@ -199,7 +200,13 @@ export default function Dashboard() {
                       className="dash-event-row glass-card"
                       style={{ animationDelay: `${i * 80}ms` }}
                     >
-                      <img src={event.image} alt={event.title} className="dash-event-img" />
+                      <img
+                        src={normalizeImageUrl(event.image, event.category)}
+                        alt={event.title}
+                        className="dash-event-img"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => handleImageError(e, event.category)}
+                      />
 
                       <div className="dash-event-info">
                         <div className="dash-event-badges">

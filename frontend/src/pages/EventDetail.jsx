@@ -19,6 +19,7 @@ import {
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { getEventById, registerForEvent } from "../services/api";
+import { normalizeImageUrl, handleImageError } from "../utils/imageHelper";
 import "./EventDetail.css";
 
 export default function EventDetail() {
@@ -153,7 +154,13 @@ export default function EventDetail() {
 
       {/* Hero Banner */}
       <div className="detail-hero">
-        <img src={event.image} alt={event.title} className="detail-hero-img" />
+        <img
+          src={normalizeImageUrl(event.image, event.category)}
+          alt={event.title}
+          className="detail-hero-img"
+          referrerPolicy="no-referrer"
+          onError={(e) => handleImageError(e, event.category)}
+        />
         <div className="detail-hero-overlay" />
         <div className="container detail-hero-content">
           <div className="detail-top-badges">

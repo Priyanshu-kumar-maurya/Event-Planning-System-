@@ -19,6 +19,7 @@ import {
 import { categories } from "../data/mockEvents";
 import { getEventById, updateEvent } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { normalizeImageUrl, handleImageError } from "../utils/imageHelper";
 import "./CreateEvent.css";
 
 const imagePresets = [
@@ -54,6 +55,16 @@ export default function EditEvent() {
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [apiError, setApiError] = useState(null);
+
+  // Calculate today's date YYYY-MM-DD for min date constraint
+  const getTodayString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const todayDate = getTodayString();
 
   // Fetch initial event data
   useEffect(() => {
@@ -104,7 +115,11 @@ export default function EditEvent() {
     const e = {};
     if (!form.title.trim()) e.title = "Event title is required";
     if (!form.category) e.category = "Please select a category";
-    if (!form.date) e.date = "Date is required";
+    if (!form.date) {
+      e.date = "Event date is required";
+    } else if (form.date < todayDate) {
+      e.date = "Past dates are not allowed. Please select today or a future date.";
+    }
     if (!form.time.trim()) e.time = "Time is required";
     if (!form.location.trim()) e.location = "Location is required";
     if (!form.description.trim()) e.description = "Description is required";
@@ -132,6 +147,10 @@ export default function EditEvent() {
       setSaving(true);
       setApiError(null);
 
+      const normalizedImg = form.image.trim()
+        ? normalizeImageUrl(form.image.trim(), form.category)
+        : undefined;
+
       const payload = {
         title: form.title.trim(),
         category: form.category,
@@ -142,10 +161,12 @@ export default function EditEvent() {
         seats: Number(form.seats),
         price: Number(form.price) || 0,
         tags: form.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-        image: form.image.trim() || undefined,
+          ? form.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [],
+        image: normalizedImg,
         organizer: form.organizer.trim() || (user ? user.name : "Event Organizer"),
       };
 
@@ -172,6 +193,8 @@ export default function EditEvent() {
     );
   }
 
+  const previewImage = normalizeImageUrl(form.image, form.category);
+
   return (
     <div className="page-wrapper create-page">
       {/* Header */}
@@ -183,7 +206,7 @@ export default function EditEvent() {
               <p className="section-label">✏️ Update Event</p>
               <h1 className="section-title">Edit Event Details</h1>
               <p className="section-subtitle">
-                Change event date, timing, location, description, or capacity. All updates sync to MongoDB.
+                Change event date, timing, location, description, image or capacity. All updates sync to MongoDB.
               </p>
             </div>
             <Link to={`/events/${id}`} className="btn-secondary" style={{ gap: "6px" }}>
@@ -251,7 +274,7 @@ export default function EditEvent() {
                   className={`form-select ${errors.category ? "error" : ""}`}
                 >
                   <option value="">Select a category</option>
-                  {categories.map((c) => (
+                  {categories.filter((c) => c !== "All").map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>
@@ -287,7 +310,7 @@ export default function EditEvent() {
                 {/* Date */}
                 <div className="form-group">
                   <label className="form-label" htmlFor="date">
-                    Event Date <span className="req">*</span>
+                    Event Date <span className="req">*</span> (Future dates only)
                   </label>
                   <input
                     id="date"
@@ -295,6 +318,7 @@ export default function EditEvent() {
                     name="date"
                     value={form.date}
                     onChange={handleChange}
+                    min={todayDate}
                     className={`form-input ${errors.date ? "error" : ""}`}
                   />
                   {errors.date && <span className="form-error">{errors.date}</span>}
@@ -420,17 +444,20 @@ export default function EditEvent() {
               {/* Image URL */}
               <div className="form-group">
                 <label className="form-label" htmlFor="image">
-                  Cover Image URL
+                  Cover Image URL (Instagram, Drive, or Web Link)
                 </label>
                 <input
                   id="image"
                   type="url"
                   name="image"
-                  placeholder="https://images.unsplash.com/..."
+                  placeholder="Paste Instagram post link (e.g. instagram.com/p/...) or image URL"
                   value={form.image}
                   onChange={handleChange}
                   className="form-input"
                 />
+                <small style={{ color: "var(--text-muted)", fontSize: "0.8rem", marginTop: "5px", display: "block" }}>
+                  📸 Instagram post links (<code>https://www.instagram.com/p/...</code>), Google Drive, Unsplash, etc. direct preview aur save honge.
+                </small>
               </div>
 
               {/* Quick Image Presets */}
@@ -505,16 +532,11 @@ export default function EditEvent() {
             <div className="preview-card glass-card">
               <div className="preview-img-wrap">
                 <img
-                  src={
-                    form.image ||
-                    "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80"
-                  }
+                  src={previewImage}
                   alt="Preview"
                   className="preview-img"
-                  onError={(e) => {
-                    e.target.src =
-                      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80";
-                  }}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => handleImageError(e, form.category)}
                 />
                 <div className="preview-badges">
                   <span className="badge badge-purple">

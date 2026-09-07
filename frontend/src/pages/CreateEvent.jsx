@@ -19,6 +19,7 @@ import {
 import { categories } from "../data/mockEvents";
 import { createEvent } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { normalizeImageUrl, handleImageError } from "../utils/imageHelper";
 import "./CreateEvent.css";
 
 const initialForm = {
@@ -43,6 +44,16 @@ export default function CreateEvent() {
   const [submitted, setSubmitted] = useState(false);
   const [apiError, setApiError] = useState(null);
   const navigate = useNavigate();
+
+  // Calculate today's date YYYY-MM-DD for min date constraint
+  const getTodayString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const todayDate = getTodayString();
 
   // If user is not logged in, require login
   if (!user) {
@@ -75,7 +86,11 @@ export default function CreateEvent() {
     const e = {};
     if (!form.title.trim()) e.title = "Event title is required";
     if (!form.category) e.category = "Please select a category";
-    if (!form.date) e.date = "Date is required";
+    if (!form.date) {
+      e.date = "Event date is required";
+    } else if (form.date < todayDate) {
+      e.date = "Past dates are not allowed. Please select today or a future date.";
+    }
     if (!form.time) e.time = "Time is required";
     if (!form.location.trim()) e.location = "Location is required";
     if (!form.description.trim()) e.description = "Description is required";
@@ -102,8 +117,13 @@ export default function CreateEvent() {
       setSubmitting(true);
       setApiError(null);
 
+      const normalizedImg = form.image.trim()
+        ? normalizeImageUrl(form.image.trim(), form.category)
+        : undefined;
+
       const eventData = {
         ...form,
+        image: normalizedImg,
         organizer: form.organizer || user.name,
         seats: Number(form.seats),
         price: Number(form.price) || 0,
@@ -114,7 +134,7 @@ export default function CreateEvent() {
 
       await createEvent(eventData);
       setSubmitted(true);
-      setTimeout(() => navigate("/events"), 3000);
+      setTimeout(() => navigate("/events"), 2500);
     } catch (err) {
       setApiError(err.message);
     } finally {
@@ -128,7 +148,7 @@ export default function CreateEvent() {
         <div className="container success-page">
           <div className="success-card glass-card">
             <div className="success-icon">🎉</div>
-            <h2 className="success-title">Event Created!</h2>
+            <h2 className="success-title">Event Created Successfully!</h2>
             <p className="success-msg">
               <strong>{form.title}</strong> has been saved to MongoDB under organizer{" "}
               <strong>{user.name}</strong>!
@@ -140,23 +160,30 @@ export default function CreateEvent() {
     );
   }
 
+  const previewImage = normalizeImageUrl(form.image, form.category);
+
   return (
     <div className="page-wrapper create-page">
+      {/* Header */}
       <div className="create-header">
         <div className="create-header-orb" />
         <div className="container create-header-inner">
-          <p className="section-label">✨ Organizer Studio</p>
-          <h1 className="section-title">Create Campus Event</h1>
+          <p className="section-label">✨ Share with campus</p>
+          <h1 className="section-title">Create New Event</h1>
           <p className="section-subtitle">
-            Publishing as <strong>{user.name}</strong> ({user.email}) · Data saves directly to MongoDB
+            Fill in the details below to publish your event. All data is saved directly to MongoDB.
           </p>
         </div>
       </div>
 
-      <div className="container create-layout">
-        <form className="create-form" onSubmit={handleSubmit} noValidate>
-          {apiError && <div className="api-error-banner">⚠️ {apiError}</div>}
+      <div className="container create-body">
+        {apiError && (
+          <div className="form-error-banner animate-fadeIn">
+            ⚠️ {apiError}
+          </div>
+        )}
 
+        <form onSubmit={handleSubmit} className="create-form" noValidate>
           {/* Basic Info */}
           <div className="form-section glass-card">
             <h3 className="form-section-title">
@@ -172,7 +199,7 @@ export default function CreateEvent() {
                 name="title"
                 type="text"
                 className={`form-input ${errors.title ? "error" : ""}`}
-                placeholder="e.g. Annual Tech Fest 2025"
+                placeholder="e.g. InnovateX: Annual Hackathon 2025"
                 value={form.title}
                 onChange={handleChange}
               />
@@ -191,21 +218,19 @@ export default function CreateEvent() {
                   value={form.category}
                   onChange={handleChange}
                 >
-                  <option value="">Select category</option>
-                  {categories
-                    .filter((c) => c !== "All")
-                    .map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
+                  <option value="">Select Category</option>
+                  {categories.filter((c) => c !== "All").map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
                 </select>
                 {errors.category && <span className="form-error">{errors.category}</span>}
               </div>
 
               <div className="form-group">
                 <label className="form-label" htmlFor="organizer">
-                  Club / Organizer Name
+                  Organizer Name
                 </label>
                 <input
                   id="organizer"
@@ -245,7 +270,7 @@ export default function CreateEvent() {
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label" htmlFor="date">
-                  Event Date *
+                  Event Date * (Future dates only)
                 </label>
                 <input
                   id="date"
@@ -254,7 +279,7 @@ export default function CreateEvent() {
                   className={`form-input ${errors.date ? "error" : ""}`}
                   value={form.date}
                   onChange={handleChange}
-                  min={new Date().toISOString().split("T")[0]}
+                  min={todayDate}
                 />
                 {errors.date && <span className="form-error">{errors.date}</span>}
               </div>
@@ -350,23 +375,29 @@ export default function CreateEvent() {
 
             <div className="form-group">
               <label className="form-label" htmlFor="image">
-                <FiImage /> Image URL (optional)
+                <FiImage /> Image URL (Instagram, Drive, or Web Link)
               </label>
               <input
                 id="image"
                 name="image"
                 type="url"
                 className="form-input"
-                placeholder="https://images.unsplash.com/..."
+                placeholder="Paste Instagram post link (e.g. instagram.com/p/...) or image URL"
                 value={form.image}
                 onChange={handleChange}
               />
+              <small style={{ color: "var(--text-muted)", fontSize: "0.8rem", marginTop: "5px", display: "block" }}>
+                📸 Instagram post links (<code>https://www.instagram.com/p/...</code>), Google Drive, Unsplash, etc. automatic load honge.
+              </small>
+
               {form.image && (
-                <div className="image-preview">
+                <div className="image-preview" style={{ marginTop: "10px" }}>
                   <img
-                    src={form.image}
+                    src={previewImage}
                     alt="Preview"
-                    onError={(e) => (e.target.style.display = "none")}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => handleImageError(e, form.category)}
+                    style={{ maxHeight: "160px", borderRadius: "8px", objectFit: "cover", width: "100%" }}
                   />
                 </div>
               )}
@@ -395,16 +426,13 @@ export default function CreateEvent() {
         <div className="create-preview">
           <h3 className="preview-label">Live Preview</h3>
           <div className="preview-card glass-card">
-            {form.image ? (
-              <img
-                src={form.image}
-                alt=""
-                className="preview-img"
-                onError={(e) => (e.target.style.display = "none")}
-              />
-            ) : (
-              <div className="preview-img-placeholder">🖼️ Event Image</div>
-            )}
+            <img
+              src={previewImage}
+              alt=""
+              className="preview-img"
+              referrerPolicy="no-referrer"
+              onError={(e) => handleImageError(e, form.category)}
+            />
             <div className="preview-body">
               <span className="badge badge-purple">{form.category || "Category"}</span>
               <h4 className="preview-title">{form.title || "Your Event Title"}</h4>
