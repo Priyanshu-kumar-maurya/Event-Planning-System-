@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Report - Event Planning System (EventHub)</title>
+<style>
+  @page {
+    size: A4;
+    margin: 22mm 20mm 22mm 20mm;
+    @bottom-center {
+      content: counter(page);
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 11pt;
+    }
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.65;
+    color: #111;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .no-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 {
+    font-family: 'Times New Roman', Times, serif;
+    color: #0d1b2a;
+    margin-top: 18pt;
+    margin-bottom: 8pt;
+    font-weight: bold;
+  }
+
+  h1.chapter-title {
+    font-size: 20pt;
+    text-align: center;
+    text-transform: uppercase;
+    border-bottom: 2px solid #1b263b;
+    padding-bottom: 8pt;
+    margin-top: 10pt;
+    margin-bottom: 20pt;
+    letter-spacing: 0.5px;
+  }
+
+  h2.section-title {
+    font-size: 15pt;
+    border-bottom: 1px solid #778da9;
+    padding-bottom: 4pt;
+    margin-top: 16pt;
+    margin-bottom: 10pt;
+    color: #1b263b;
+  }
+
+  h3.sub-section-title {
+    font-size: 13pt;
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+    color: #415a77;
+  }
+
+  p {
+    text-align: justify;
+    margin-bottom: 10pt;
+    text-indent: 24pt;
+  }
+
+  p.no-indent {
+    text-indent: 0;
+  }
+
+  /* Cover Page */
+  .cover-page {
+    height: 100%;
+    min-height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    border: 3px double #1b263b;
+    padding: 25mm 15mm;
+  }
+
+  .cover-univ-title {
+    font-size: 18pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #0d1b2a;
+    letter-spacing: 1px;
+    margin-bottom: 6pt;
+  }
+
+  .cover-dept {
+    font-size: 13pt;
+    font-style: italic;
+    color: #415a77;
+  }
+
+  .cover-project-report {
+    font-size: 14pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 25pt;
+    letter-spacing: 2px;
+    color: #1b263b;
+  }
+
+  .cover-project-on {
+    font-size: 12pt;
+    margin: 8pt 0;
+    font-style: italic;
+  }
+
+  .cover-main-title {
+    font-size: 24pt;
+    font-weight: 900;
+    color: #0d1b2a;
+    text-transform: uppercase;
+    margin: 15pt 0 8pt;
+    line-height: 1.25;
+    letter-spacing: 1px;
+  }
+
+  .cover-sub-title {
+    font-size: 13pt;
+    font-weight: 600;
+    color: #415a77;
+    margin-bottom: 25pt;
+  }
+
+  .cover-details-grid {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    margin-top: 30pt;
+    font-size: 12pt;
+    padding: 0 10mm;
+  }
+
+  .cover-date {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 25pt;
+    text-transform: uppercase;
+  }
+
+  /* Certificate & Declaration */
+  .cert-header {
+    text-align: center;
+    font-size: 18pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 25pt;
+    text-decoration: underline;
+  }
+
+  .signature-block {
+    margin-top: 50pt;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .signature-box {
+    text-align: center;
+    width: 200pt;
+    border-top: 1px solid #333;
+    padding-top: 6pt;
+    font-weight: bold;
+  }
+
+  /* Table of Contents / Index Table (Exact match with user photo) */
+  table.index-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20pt;
+    font-size: 12pt;
+  }
+
+  table.index-table th {
+    background-color: #243b55;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    padding: 10pt 8pt;
+    border: 1px solid #1b263b;
+    font-size: 12pt;
+  }
+
+  table.index-table td {
+    border: 1px solid #333;
+    padding: 8pt 10pt;
+    vertical-align: middle;
+  }
+
+  table.index-table td.chap-no {
+    text-align: center;
+    font-weight: bold;
+    width: 15%;
+  }
+
+  table.index-table td.chap-name {
+    text-align: left;
+    width: 70%;
+  }
+
+  table.index-table td.chap-page {
+    text-align: center;
+    width: 15%;
+    font-weight: bold;
+  }
+
+  table.index-table tr.sub-item td.chap-name {
+    padding-left: 28pt;
+  }
+
+  /* Data & Comparison Tables */
+  table.content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14pt 0;
+    font-size: 11pt;
+  }
+
+  table.content-table th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: bold;
+    text-align: left;
+    padding: 8pt;
+    border: 1px solid #cbd5e1;
+  }
+
+  table.content-table td {
+    border: 1px solid #cbd5e1;
+    padding: 7pt 8pt;
+  }
+
+  table.content-table tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  /* Diagram Box */
+  .diagram-box {
+    border: 1px solid #94a3b8;
+    background: #f8fafc;
+    border-radius: 6px;
+    padding: 14pt;
+    margin: 16pt 0;
+    text-align: center;
+  }
+
+  .diagram-caption {
+    font-size: 10.5pt;
+    font-weight: bold;
+    color: #334155;
+    margin-top: 8pt;
+    text-align: center;
+  }
+
+  /* Code / Schema snippet */
+  .schema-box {
+    background: #0f172a;
+    color: #f8fafc;
+    border-radius: 6px;
+    padding: 12pt 16pt;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9.5pt;
+    line-height: 1.45;
+    margin: 12pt 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* Mock UI Box */
+  .ui-mock-card {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    padding: 12pt;
+    margin: 14pt 0;
+  }
+
+  .ui-mock-header {
+    background: #1e1b4b;
+    color: #fff;
+    padding: 6pt 10pt;
+    border-radius: 4px 4px 0 0;
+    font-weight: bold;
+    font-size: 10pt;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .ui-mock-body {
+    padding: 10pt;
+    font-size: 10pt;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background: #f8fafc;
+  }
+
+  ul, ol {
+    margin-top: 4pt;
+    margin-bottom: 10pt;
+    padding-left: 25pt;
+  }
+
+  li {
+    margin-bottom: 4pt;
+  }
+
+  .badge-tag {
+    display: inline-block;
+    padding: 2pt 6pt;
+    font-size: 9pt;
+    font-weight: bold;
+    border-radius: 4px;
+    background: #e0e7ff;
+    color: #4338ca;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================================= -->
+<!-- COVER / TITLE PAGE -->
+<!-- ========================================================= -->
+<div class="cover-page page-break">
+  <div>
+    <div class="cover-univ-title">DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING</div>
+    <div class="cover-dept">Bachelor of Technology / Computer Applications Major Project</div>
+    <div style="width: 80px; height: 3px; background: #1b263b; margin: 12pt auto;"></div>
+    <div class="cover-project-report">A PROJECT REPORT ON</div>
+    <div class="cover-main-title">EVENT PLANNING SYSTEM</div>
+    <div class="cover-sub-title">(EventHub — Real-Time Campus Event Management Platform)</div>
+  </div>
+
+  <div style="margin: 15pt 0;">
+    <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="46" stroke="#1b263b" stroke-width="3" stroke-dasharray="4 2"/>
+      <path d="M30 40H70V70C70 72.2 68.2 74 66 74H34C31.8 74 30 72.2 30 70V40Z" fill="#243b55"/>
+      <path d="M26 34C26 31.8 27.8 30 30 30H70C72.2 30 74 31.8 74 34V40H26V34Z" fill="#7c3aed"/>
+      <circle cx="40" cy="24" r="3" fill="#ec4899"/>
+      <circle cx="60" cy="24" r="3" fill="#ec4899"/>
+      <path d="M42 50L48 56L60 44" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div>
+    <p class="no-indent" style="font-size: 11pt; text-align: center; margin-bottom: 12pt;">
+      Submitted in partial fulfillment of the requirements for the degree of<br>
+      <strong>Bachelor of Technology in Computer Science & Engineering</strong>
+    </p>
+
+    <div class="cover-details-grid">
+      <div>
+        <strong>Submitted By:</strong><br>
+        <strong>Priyanshu Kumar Maurya</strong><br>
+        Roll No: [Your University Roll No]<br>
+        B.Tech (CSE) Final Year
+      </div>
+      <div style="text-align: right;">
+        <strong>Under the Guidance of:</strong><br>
+        <strong>[Project Guide Name]</strong><br>
+        Assistant Professor<br>
+        Department of Computer Science & Engg.
+      </div>
+    </div>
+
+    <div class="cover-date">
+      ACADEMIC SESSION: 2025 – 2026
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- CERTIFICATE OF APPROVAL -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <div class="cert-header">CERTIFICATE OF APPROVAL</div>
+
+  <p>
+    This is to certify that the project entitled <strong>"EVENT PLANNING & MANAGEMENT SYSTEM (EVENTHUB)"</strong> submitted by <strong>Priyanshu Kumar Maurya</strong> (Roll No: __________________) in partial fulfillment of the requirements for the award of the degree of <strong>Bachelor of Technology in Computer Science & Engineering</strong> is an authentic record of bonafide project work carried out under my supervision and guidance.
+  </p>
+
+  <p>
+    To the best of my knowledge, the matter embodied in this project report has not been submitted to any other University or Institute for the award of any degree or diploma.
+  </p>
+
+  <div style="margin-top: 40pt;">
+    <table style="width: 100%; border: none;">
+      <tr>
+        <td style="border: none; width: 50%;">
+          Date: ________________<br>
+          Place: ________________
+        </td>
+        <td style="border: none; width: 50%; text-align: right;">
+          _______________________________<br>
+          <strong>[Project Guide Name]</strong><br>
+          Project Guide & Supervisor<br>
+          Department of CSE
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="margin-top: 70pt;">
+    <table style="width: 100%; border: none;">
+      <tr>
+        <td style="border: none; width: 50%;">
+          _______________________________<br>
+          <strong>Head of Department</strong><br>
+          Department of Computer Science & Engg.
+        </td>
+        <td style="border: none; width: 50%; text-align: right;">
+          _______________________________<br>
+          <strong>External Examiner</strong><br>
+          Board of Examination
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- DECLARATION & ACKNOWLEDGEMENT -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <div class="cert-header">CANDIDATE'S DECLARATION</div>
+  <p>
+    I hereby declare that the work presented in this project report entitled <strong>"EVENT PLANNING SYSTEM (EVENTHUB)"</strong> is my own original work conducted under the supervision of my faculty guide. I have complied with all academic integrity standards, cited all external resources and libraries appropriately, and not indulged in any plagiarism.
+  </p>
+
+  <div style="margin-top: 40pt; text-align: right;">
+    _______________________________<br>
+    <strong>Priyanshu Kumar Maurya</strong><br>
+    Department of CSE<br>
+  </div>
+
+  <div style="margin-top: 50pt;" class="cert-header">ACKNOWLEDGEMENT</div>
+  <p>
+    I express my deep sense of gratitude and sincere respect to my project guide for their invaluable guidance, constant motivation, and constructive critique throughout the planning and execution of this web application.
+  </p>
+  <p>
+    I am also immensely grateful to our Head of Department and all faculty members of the Computer Science and Engineering Department for providing modern laboratory infrastructure, development environments, and technical assistance. Lastly, I extend my heartfelt thanks to my parents and peers who continually encouraged and supported me.
+  </p>
+</div>
+
+<!-- ========================================================= -->
+<!-- ABSTRACT -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <div class="cert-header">ABSTRACT</div>
+  <p>
+    In contemporary academic campuses, organizing, publicizing, and participating in college events — ranging from technical hackathons, cultural festivals, sports tournaments to entrepreneurial summits — is frequently hampered by fragmented communication channels, manual paper registrations, lack of real-time seat tracking, and absence of unified attendee management for organizers.
+  </p>
+  <p>
+    The <strong>Event Planning System (EventHub)</strong> is an enterprise-grade full-stack web application architected using the <strong>MERN (MongoDB, Express.js, React.js, Node.js)</strong> stack to streamline college event management into an automated, real-time, paperless ecosystem. The system features:
+  </p>
+  <ul>
+    <li><strong>Role-Based Authentication:</strong> Secure user authentication using bcrypt password hashing and JSON Web Tokens (JWT), segregating standard student users from college administrative authorities.</li>
+    <li><strong>Live MongoDB Event Inventory:</strong> Real-time event discovery with debounced keyword search, category filtering, and sorting capabilities.</li>
+    <li><strong>Strict Registration Guard:</strong> Intelligent prevention of unauthenticated participation and duplicate registrations, backed by automatic seat quota decrement and waitlist computation.</li>
+    <li><strong>Event Creation & Live Preview Studio:</strong> Comprehensive event publication form with live card preview, future-date enforcement (preventing past date scheduling), and universal media support (including automated Instagram post conversion, Google Drive sharing, and CDN images).</li>
+    <li><strong>Dynamic Event Modification:</strong> In-place event timing, venue, capacity, and detail editing accessible to creators and administrators.</li>
+    <li><strong>Administrative Intelligence & CSV Export:</strong> Real-time platform analytics, student directory, event inventory control, and 1-click attendee roster CSV generation for campus administration.</li>
+    <li><strong>Ultra-Responsive Glassmorphism Interface:</strong> Dark purple theme optimized for mobile smartphones, tablets, and desktop displays with touch-friendly controls.</li>
+  </ul>
+  <p>
+    The application has been deployed on cloud infrastructure (Vercel serverless environment with MongoDB Atlas), offering instantaneous accessibility to students and college coordinators.
+  </p>
+</div>
+
+<!-- ========================================================= -->
+<!-- INDEX / TABLE OF CONTENTS (Exact format as uploaded image) -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <div style="text-align: center; border-bottom: 2px solid #243b55; padding-bottom: 8pt; margin-bottom: 16pt;">
+    <h1 style="margin: 0; font-size: 22pt; letter-spacing: 2px; color: #1b263b;">INDEX</h1>
+  </div>
+
+  <table class="index-table">
+    <thead>
+      <tr>
+        <th style="width: 15%;">Chapter No.</th>
+        <th style="width: 70%;">Chapter Name</th>
+        <th style="width: 15%;">Page No.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="chap-no">1</td>
+        <td class="chap-name"><strong>Introduction</strong></td>
+        <td class="chap-page">1</td>
+      </tr>
+      <tr>
+        <td class="chap-no">2</td>
+        <td class="chap-name"><strong>Limitation of Existing System</strong></td>
+        <td class="chap-page">3</td>
+      </tr>
+      <tr>
+        <td class="chap-no">3</td>
+        <td class="chap-name"><strong>Objectives</strong></td>
+        <td class="chap-page">4</td>
+      </tr>
+      <tr>
+        <td class="chap-no">4</td>
+        <td class="chap-name"><strong>Scope</strong></td>
+        <td class="chap-page">5</td>
+      </tr>
+      <tr class="sub-item">
+        <td class="chap-no"></td>
+        <td class="chap-name">4.1 Functional Scope</td>
+        <td class="chap-page">5</td>
+      </tr>
+      <tr class="sub-item">
+        <td class="chap-no"></td>
+        <td class="chap-name">4.2 Technical Scope</td>
+        <td class="chap-page">6</td>
+      </tr>
+      <tr>
+        <td class="chap-no">5</td>
+        <td class="chap-name"><strong>Technology Stack Detailed Analysis</strong></td>
+        <td class="chap-page">7</td>
+      </tr>
+      <tr>
+        <td class="chap-no">6</td>
+        <td class="chap-name"><strong>Advantages</strong></td>
+        <td class="chap-page">9</td>
+      </tr>
+      <tr>
+        <td class="chap-no">7</td>
+        <td class="chap-name"><strong>System Design</strong></td>
+        <td class="chap-page">10</td>
+      </tr>
+      <tr class="sub-item">
+        <td class="chap-no"></td>
+        <td class="chap-name">7.1 System Modules & Use Cases</td>
+        <td class="chap-page">10</td>
+      </tr>
+      <tr class="sub-item">
+        <td class="chap-no"></td>
+        <td class="chap-name">7.2 Database Design</td>
+        <td class="chap-page">12</td>
+      </tr>
+      <tr>
+        <td class="chap-no">8</td>
+        <td class="chap-name"><strong>Screenshots</strong></td>
+        <td class="chap-page">14</td>
+      </tr>
+      <tr>
+        <td class="chap-no">9</td>
+        <td class="chap-name"><strong>ER-Diagram</strong></td>
+        <td class="chap-page">18</td>
+      </tr>
+      <tr>
+        <td class="chap-no">10</td>
+        <td class="chap-name"><strong>Software Testing</strong></td>
+        <td class="chap-page">19</td>
+      </tr>
+      <tr class="sub-item">
+        <td class="chap-no"></td>
+        <td class="chap-name">10.1 Detailed Test Cases</td>
+        <td class="chap-page">19</td>
+      </tr>
+      <tr>
+        <td class="chap-no">11</td>
+        <td class="chap-name"><strong>References</strong></td>
+        <td class="chap-page">22</td>
+      </tr>
+      <tr>
+        <td class="chap-no">12</td>
+        <td class="chap-name"><strong>Bibliography</strong></td>
+        <td class="chap-page">23</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 1: INTRODUCTION -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 1: Introduction</h1>
+
+  <h2 class="section-title">1.1 Background</h2>
+  <p>
+    Higher education institutions thrive on extracurricular and co-curricular vitality. Throughout any academic semester, colleges and universities host a wide spectrum of events including technical symposiums, hackathons, robotics competitions, cultural evenings, debating tournaments, inter-college athletic meets, and enterprise summits. These events play a pivotal role in nurturing leadership, technological aptitude, cultural appreciation, and interpersonal collaboration among students.
+  </p>
+  <p>
+    However, the administrative overhead required to plan, promote, register, and coordinate such events has conventionally relied upon obsolete manual modalities. Event flyers circulated on notice boards or scattered messaging groups fail to provide comprehensive agendas, transparent seat limits, or verified attendee rosters. As student populations in contemporary educational establishments expand into thousands, the absence of an integrated, automated software framework leads to systemic chaos, registration collisions, poor student turnout, and unaccountable administration.
+  </p>
+
+  <h2 class="section-title">1.2 Problem Statement</h2>
+  <p>
+    The core problem addressed in this project is the absence of a unified, real-time digital platform tailored for college campuses that enables students to discover upcoming activities, allows society coordinators to publish and modify events with live previews, prevents unauthorized registrations, and equips administrative personnel with instant analytic reporting and attendee auditing.
+  </p>
+
+  <h2 class="section-title">1.3 Proposed System (EventHub)</h2>
+  <p>
+    To overcome these systemic shortcomings, the <strong>Event Planning System (EventHub)</strong> is developed as a modern, reactive single-page web application (SPA) integrated with a high-throughput NoSQL document database. EventHub provides students with an intuitive portal to explore events categorized by domain (Technology, Cultural, Sports, Business, Art, Music, Food), register with automated credential binding, monitor personal registrations, and create student-led club events. 
+  </p>
+  <p>
+    Simultaneously, administrators are granted privileged oversight into platform metrics, attendee contact records, and automated CSV export capabilities, establishing an end-to-end, paperless operational pipeline.
+  </p>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 2: LIMITATION OF EXISTING SYSTEM -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 2: Limitation of Existing System</h1>
+
+  <p>
+    Prior to the development of the automated Event Planning System, universities and colleges predominantly leveraged conventional approaches such as Google Forms, paper registration slips, WhatsApp broadcast messages, and static notice boards. A critical analysis of these mechanisms reveals numerous operational and security limitations:
+  </p>
+
+  <ol>
+    <li>
+      <strong>Lack of Real-Time Seat Synchronization:</strong> Conventional Google Forms or manual registers cannot dynamically enforce maximum seating limits. If an auditorium accommodates 200 participants, forms frequently continue accepting entries beyond capacity, leading to severe overbooking, seat disputes, and embarrassment for the organizing committee.
+    </li>
+    <li>
+      <strong>Zero Authentication & Spam Entries:</strong> In existing Google Form links shared across social media, any person can submit arbitrary, fake, or duplicate entries using anonymous email addresses without verification. There is no cryptographic authentication verifying whether the registrant is a genuine enrolled student.
+    </li>
+    <li>
+      <strong>No Unified Schedule & Central Repository:</strong> Information regarding different college societies (e.g., Coding Club, Dance Society, Sports Council) is siloed across disparate Instagram pages and WhatsApp channels. Students frequently miss registration deadlines due to lack of a centralized campus calendar.
+    </li>
+    <li>
+      <strong>Absence of Dynamic Event Modification:</strong> If an event's schedule, timing, or venue changes (e.g., rain forcing an outdoor event into an indoor seminar hall), existing posters and shared messages cannot be updated dynamically. Students remain unaware of rescheduling, resulting in disorientation.
+    </li>
+    <li>
+      <strong>Manual Attendee Verification & Audit Challenges:</strong> Faculty coordinators must manually stitch together multiple spreadsheets to prepare attendee lists. Exporting verified rosters with phone numbers, student college names, and timestamps is arduous and prone to human error.
+    </li>
+    <li>
+      <strong>Poor Mobile User Experience:</strong> Traditional forms and college portals lack responsive glassmorphism interfaces, forcing students on smartphones to pinch, zoom, and navigate clunky desktop views.
+    </li>
+  </ol>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 3: OBJECTIVES -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 3: Objectives</h1>
+
+  <p>
+    The primary objective of developing the <strong>Event Planning System (EventHub)</strong> is to engineer a dependable, scalable, and responsive web application that digitizes campus event management. The specific objectives of the project are:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Automated Real-Time Registration:</strong> Implement an instant 1-click registration mechanism that records attendee profile details (name, email, phone, college) into MongoDB and automatically increments participant counts while updating seat availability indicators.
+    </li>
+    <li>
+      <strong>Strict Authentication & Role-Based Access Control (RBAC):</strong> Establish a secure security boundary utilizing JSON Web Tokens (JWT) and bcrypt password encryption, ensuring unauthenticated visitors cannot register for events and distinguishing Student users from College Administrators.
+    </li>
+    <li>
+      <strong>Dynamic Event Creation & Live Card Preview Studio:</strong> Provide authorized student organizers with a structured multi-section event creation studio featuring real-time previewing, tag assignment, price configuration, and custom media binding.
+    </li>
+    <li>
+      <strong>Validation Guard against Past Date Scheduling:</strong> Enforce calendar validation constraints prohibiting organizers from scheduling events with past dates, ensuring only current and future events are permitted.
+    </li>
+    <li>
+      <strong>Universal Media & Social Link Normalization:</strong> Implement automatic link transformation supporting Instagram post URLs (extracting high-resolution media), Google Drive public shares, and CDN images with <code>no-referrer</code> policies and automatic category fallbacks.
+    </li>
+    <li>
+      <strong>Event Schedule & Venue Modification:</strong> Deliver full lifecycle event editing allowing organizers and administrators to adjust event dates, start/end times, venue rooms, and descriptions with automatic database synchronization.
+    </li>
+    <li>
+      <strong>Administrative Roster Management & 1-Click CSV Export:</strong> Provide college administration with real-time statistics (total hosted events, aggregate registrations, registered students, estimated revenue) alongside instantaneous CSV file generation for offline verification and certificate generation.
+    </li>
+  </ul>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 4: SCOPE -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 4: Scope</h1>
+
+  <h2 class="section-title">4.1 Functional Scope</h2>
+  <p>
+    The functional scope encompasses all operational modules, interactions, and business rules executed by the system:
+  </p>
+  <ul>
+    <li><strong>User Management Module:</strong> Registration, login, profile identification, encrypted token storage in browser local storage, and automated session renewal.</li>
+    <li><strong>Event Catalog & Exploration Module:</strong> Live search debounced at 300ms, multi-category pill filter (All, Technology, Cultural, Sports, Business, Art, Music, Food), and multi-criteria sorting (Date, Popularity, Free First, Newest).</li>
+    <li><strong>Registration & Capacity Enforcement Module:</strong> Enforces login before registration; displays real-time percentage capacity fill bars; blocks registration when seats reach capacity; prevents duplicate participation.</li>
+    <li><strong>Event Creation & Modification Module:</strong> Input fields for Title, Category, Date, Time, Venue, Seats, Price, Image URL, Tags; live sticky card preview; date picker locked to <code>min=Today</code>; in-place edit capability for event creators and admins.</li>
+    <li><strong>Student Dashboard Module:</strong> Segregated tabs displaying "Events You Registered For" with 1-click unregister, and "Events You Organized" with quick edit and delete actions.</li>
+    <li><strong>Admin Dashboard Module:</strong> Comprehensive metrics dashboard, searchable event inventory, per-event attendee directories, registered user roster, and automated browser-side CSV export generator.</li>
+  </ul>
+
+  <h2 class="section-title">4.2 Technical Scope</h2>
+  <p>
+    The technical architecture adheres to contemporary web engineering practices:
+  </p>
+  <ul>
+    <li><strong>Client-Side Architecture:</strong> Developed using React 18, utilizing functional components, custom hooks, and context API (<code>AuthContext</code>) for global state management without external heavy libraries.</li>
+    <li><strong>Build Optimization:</strong> Powered by Vite build tool providing sub-second Hot Module Replacement (HMR) and roll-up production minification.</li>
+    <li><strong>Server-Side Architecture:</strong> RESTful API engine powered by Node.js and Express.js, featuring modular routing (<code>authRoutes</code>, <code>eventRoutes</code>) and centralized error handling middleware.</li>
+    <li><strong>Database Architecture:</strong> Hosted on MongoDB NoSQL database utilizing Mongoose Object Data Modeling (ODM) with embedded sub-documents for registered attendees.</li>
+    <li><strong>Security Infrastructure:</strong> JWT bearer tokens, bcrypt hashing (10 salt rounds), CORS whitelisting, and input sanitization.</li>
+  </ul>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 5: TECHNOLOGY STACK DETAILED ANALYSIS -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 5: Technology Stack Detailed Analysis</h1>
+
+  <p>
+    The selection of technologies for the Event Planning System was governed by criteria of performance, developer ergonomics, security, and cloud scalability. The system utilizes the MERN stack:
+  </p>
+
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Layer</th>
+        <th style="width: 25%;">Technology</th>
+        <th style="width: 50%;">Role in EventHub</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend Library</strong></td>
+        <td>React.js (v18.3)</td>
+        <td>Declarative component-based UI rendering, virtual DOM reconciliation, stateful UI hooks (useState, useEffect, useMemo).</td>
+      </tr>
+      <tr>
+        <td><strong>Build Tool & Bundler</strong></td>
+        <td>Vite (v8.2)</td>
+        <td>Next-generation frontend tooling offering rapid development server startup, ES modules resolution, and optimized production bundle.</td>
+      </tr>
+      <tr>
+        <td><strong>Routing Engine</strong></td>
+        <td>React Router DOM (v6.22)</td>
+        <td>Client-side single-page routing, URL parameter extraction (<code>/events/:id</code>, <code>/events/:id/edit</code>), and protected route redirects.</td>
+      </tr>
+      <tr>
+        <td><strong>Iconography & UI</strong></td>
+        <td>React Icons (Feather Icons)</td>
+        <td>Lightweight, scalable vector icons (FiCalendar, FiClock, FiMapPin, FiUsers, FiLock, FiEdit2).</td>
+      </tr>
+      <tr>
+        <td><strong>Styling & CSS</strong></td>
+        <td>Vanilla CSS3 (Glassmorphism)</td>
+        <td>Custom design system utilizing CSS Custom Properties (Variables), backdrop-filters, CSS Grid, Flexbox, and fluid typography clamp().</td>
+      </tr>
+      <tr>
+        <td><strong>Backend Runtime</strong></td>
+        <td>Node.js (v22.x LTS)</td>
+        <td>Asynchronous, non-blocking I/O runtime executing server-side JavaScript and handling concurrent network requests.</td>
+      </tr>
+      <tr>
+        <td><strong>Backend Framework</strong></td>
+        <td>Express.js (v4.19)</td>
+        <td>Minimalist REST API routing engine, middleware chaining (CORS, body-parser, auth guards), and HTTP error routing.</td>
+      </tr>
+      <tr>
+        <td><strong>Database Engine</strong></td>
+        <td>MongoDB (NoSQL)</td>
+        <td>High-performance document database storing BSON records for users and events with embedded attendee schemas.</td>
+      </tr>
+      <tr>
+        <td><strong>Data Modeling</strong></td>
+        <td>Mongoose (v8.3)</td>
+        <td>Schema validation, relationship modeling, pre-save cryptographic hooks, and query projection.</td>
+      </tr>
+      <tr>
+        <td><strong>Security & Tokens</strong></td>
+        <td>JWT & bcryptjs</td>
+        <td>Stateless authentication tokens passed via HTTP Authorization headers; secure salt-hashed password storage.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 6: ADVANTAGES -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 6: Advantages</h1>
+
+  <p>
+    Implementing the Event Planning System offers substantial operational, administrative, and ecological benefits over legacy methodologies:
+  </p>
+
+  <ol>
+    <li>
+      <strong>Zero Overbooking with Automated Seat Locks:</strong> The platform dynamically monitors attendee counts against declared capacity. Once spots are exhausted, the registration button automatically transitions to a disabled "Event Full" state, preventing seat collisions.
+    </li>
+    <li>
+      <strong>100% Paperless and Eco-Friendly:</strong> Eliminates physical registration desks, paper forms, and printed ticket stubs. All records, registrations, and verification lists reside securely in digital storage.
+    </li>
+    <li>
+      <strong>Instant Administrative Reporting (CSV Generation):</strong> Campus authorities can download comprehensive attendee lists containing student names, contact numbers, email addresses, and timestamps with a single click, saving hours of manual consolidation.
+    </li>
+    <li>
+      <strong>Universal Social Media Image Integration:</strong> Organizers can directly paste Instagram post links, Google Drive photo links, or Unsplash URLs without needing to re-upload files to expensive third-party storage buckets.
+    </li>
+    <li>
+      <strong>Responsive Multi-Device Usability:</strong> Crafted with a mobile-first philosophy, students can browse events, register, or review schedules on Android/iOS smartphones just as smoothly as on desktop monitors.
+    </li>
+    <li>
+      <strong>Robust Security & Privacy:</strong> Sensitive user passwords are encrypted with one-way bcrypt hashing before database persistence. JWT tokens ensure users can only modify or delete events they legitimately organized.
+    </li>
+  </ol>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 7: SYSTEM DESIGN -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 7: System Design</h1>
+
+  <h2 class="section-title">7.1 System Modules & Use Cases</h2>
+  <p>
+    The architecture of EventHub is structured around three primary actor modules:
+  </p>
+
+  <div class="diagram-box">
+    <svg width="100%" height="240" viewBox="0 0 650 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Client Tier -->
+      <rect x="20" y="30" width="160" height="180" rx="8" fill="#f1f5f9" stroke="#3b82f6" stroke-width="2"/>
+      <text x="100" y="60" text-anchor="middle" font-weight="bold" font-size="14" fill="#1e3a8a">CLIENT TIER</text>
+      <rect x="35" y="80" width="130" height="30" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="100" y="100" text-anchor="middle" font-size="11" fill="#334155">React 18 SPA</text>
+      <rect x="35" y="120" width="130" height="30" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="100" y="140" text-anchor="middle" font-size="11" fill="#334155">AuthContext (JWT)</text>
+      <rect x="35" y="160" width="130" height="30" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="100" y="180" text-anchor="middle" font-size="11" fill="#334155">Vite Dev / Prod</text>
+
+      <!-- Connection Arrows -->
+      <path d="M190 120 L230 120" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow)"/>
+      <text x="210" y="110" text-anchor="middle" font-size="10" fill="#6d28d9">REST/JSON</text>
+
+      <!-- Server Tier -->
+      <rect x="240" y="30" width="170" height="180" rx="8" fill="#fdf4ff" stroke="#a855f7" stroke-width="2"/>
+      <text x="325" y="60" text-anchor="middle" font-weight="bold" font-size="14" fill="#581c87">SERVER TIER</text>
+      <rect x="255" y="80" width="140" height="30" rx="4" fill="#ffffff" stroke="#e9d5ff"/>
+      <text x="325" y="100" text-anchor="middle" font-size="11" fill="#334155">Express.js API</text>
+      <rect x="255" y="120" width="140" height="30" rx="4" fill="#ffffff" stroke="#e9d5ff"/>
+      <text x="325" y="140" text-anchor="middle" font-size="11" fill="#334155">Auth / Protect Guard</text>
+      <rect x="255" y="160" width="140" height="30" rx="4" fill="#ffffff" stroke="#e9d5ff"/>
+      <text x="325" y="180" text-anchor="middle" font-size="11" fill="#334155">Mongoose ODM</text>
+
+      <!-- Connection Arrows -->
+      <path d="M420 120 L460 120" stroke="#059669" stroke-width="3"/>
+      <text x="440" y="110" text-anchor="middle" font-size="10" fill="#047857">TCP/BSON</text>
+
+      <!-- Database Tier -->
+      <rect x="470" y="30" width="160" height="180" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+      <text x="550" y="60" text-anchor="middle" font-weight="bold" font-size="14" fill="#064e3b">DATABASE</text>
+      <rect x="485" y="80" width="130" height="30" rx="4" fill="#ffffff" stroke="#a7f3d0"/>
+      <text x="550" y="100" text-anchor="middle" font-size="11" fill="#334155">MongoDB (NoSQL)</text>
+      <rect x="485" y="120" width="130" height="30" rx="4" fill="#ffffff" stroke="#a7f3d0"/>
+      <text x="550" y="140" text-anchor="middle" font-size="11" fill="#334155">Users Collection</text>
+      <rect x="485" y="160" width="130" height="30" rx="4" fill="#ffffff" stroke="#a7f3d0"/>
+      <text x="550" y="180" text-anchor="middle" font-size="11" fill="#334155">Events Collection</text>
+    </svg>
+    <div class="diagram-caption">Figure 7.1: Three-Tier System Architecture of EventHub</div>
+  </div>
+
+  <h2 class="section-title">7.2 Database Design</h2>
+  <p>
+    MongoDB stores data in flexible BSON documents. Two primary collections form the backbone of the database design:
+  </p>
+
+  <h3 class="sub-section-title">1. Users Collection Schema (<code>models/User.js</code>)</h3>
+  <div class="schema-box">
+{
+  "_id": ObjectId("..."),
+  "name": { "type": String, "required": true, "trim": true },
+  "email": { "type": String, "required": true, "unique": true, "lowercase": true },
+  "password": { "type": String, "required": true, "minlength": 6 }, // bcrypt hashed
+  "role": { "type": String, "enum": ["user", "admin"], "default": "user" },
+  "college": { "type": String, "default": "Netaji Subhas University of Technology" },
+  "phone": { "type": String, "default": "" },
+  "createdAt": { "type": Date, "default": Date.now }
+}
+  </div>
+
+  <h3 class="sub-section-title">2. Events Collection Schema with Embedded Attendees (<code>models/Event.js</code>)</h3>
+  <div class="schema-box">
+{
+  "_id": ObjectId("..."),
+  "title": { "type": String, "required": true, "trim": true },
+  "category": { 
+    "type": String, 
+    "enum": ["Technology", "Cultural", "Sports", "Business", "Art", "Music", "Food"] 
+  },
+  "date": { "type": String, "required": true },        // Stored as YYYY-MM-DD
+  "time": { "type": String, "required": true },        // e.g. "10:00 AM - 4:00 PM"
+  "location": { "type": String, "required": true },    // e.g. "Main Auditorium"
+  "description": { "type": String, "required": true },
+  "image": { "type": String, "default": "https://..." },
+  "organizer": { "type": String, "required": true },
+  "seats": { "type": Number, "required": true, "min": 1 },
+  "price": { "type": Number, "default": 0 },           // 0 indicates Free entry
+  "tags": [ { "type": String } ],
+  "createdBy": { "type": mongoose.Schema.Types.ObjectId, "ref": "User" },
+  "creatorEmail": { "type": String, "default": "" },
+  "registeredUsers": [
+    {
+      "userId": { "type": mongoose.Schema.Types.ObjectId, "ref": "User" },
+      "name": String,
+      "email": String,
+      "college": String,
+      "phone": String,
+      "registeredAt": { "type": Date, "default": Date.now }
+    }
+  ],
+  "createdAt": { "type": Date, "default": Date.now }
+}
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 8: SCREENSHOTS & UI FLOW -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 8: Screenshots</h1>
+
+  <p>
+    This chapter presents key user interface layouts and functional flows of the EventHub web application:
+  </p>
+
+  <!-- Screen 1: Home -->
+  <div class="ui-mock-card no-break">
+    <div class="ui-mock-header">
+      <span>8.1 Home Page (Hero Banner, Quick Search & Stats)</span>
+      <span>Route: /</span>
+    </div>
+    <div class="ui-mock-body">
+      <strong>Visual Elements:</strong> Dark purple theme with glowing radial orbs, prominent title <em>"Discover & Create Amazing Events"</em>, live database search bar, action buttons ("Explore Events", "Create an Event"), and platform statistics grid (10+ Events Hosted, 1500+ Students Connected, 100% Free Campus Access).
+    </div>
+  </div>
+
+  <!-- Screen 2: Events Directory -->
+  <div class="ui-mock-card no-break">
+    <div class="ui-mock-header">
+      <span>8.2 Events Catalog with Category Pills & Sorting</span>
+      <span>Route: /events</span>
+    </div>
+    <div class="ui-mock-body">
+      <strong>Visual Elements:</strong> Debounced live search input, sort selector (Date, Popularity, Free First, Newest), scrollable horizontal category filter pills (All, Technology, Cultural, Sports, Business, Art, Music, Food), and responsive cards displaying image badges, dates, venues, and capacity progress bars.
+    </div>
+  </div>
+
+  <!-- Screen 3: Event Detail -->
+  <div class="ui-mock-card no-break">
+    <div class="ui-mock-header">
+      <span>8.3 Event Details Page with Strict Login Guard</span>
+      <span>Route: /events/:id</span>
+    </div>
+    <div class="ui-mock-body">
+      <strong>Visual Elements:</strong> Hero cover photo, event title, organizer info, full agenda description, schedule details box (Date, Timing, Hall room), spots left progress indicator, and the interactive Registration CTA card. For unauthenticated guests, an interactive padlock card with "Log In to Participate" CTA is displayed.
+    </div>
+  </div>
+
+  <!-- Screen 4: Create Event Studio -->
+  <div class="ui-mock-card no-break">
+    <div class="ui-mock-header">
+      <span>8.4 Create Event Studio with Sticky Live Preview</span>
+      <span>Route: /create-event</span>
+    </div>
+    <div class="ui-mock-body">
+      <strong>Visual Elements:</strong> Modular glass cards for Basic Info, Date/Time/Venue (calendar picker with past dates disabled via <code>min=Today</code>), Capacity/Pricing, Cover Image URL with Instagram/Drive auto-support & category presets chips, and sticky Live Card Preview mirroring the official event card.
+    </div>
+  </div>
+
+  <!-- Screen 5: Edit Event -->
+  <div class="ui-mock-card no-break">
+    <div class="ui-mock-header">
+      <span>8.5 In-Place Event Schedule & Venue Editor</span>
+      <span>Route: /events/:id/edit</span>
+    </div>
+    <div class="ui-mock-body">
+      <strong>Visual Elements:</strong> Pre-populated form fields loading live event parameters from MongoDB, breadcrumbs header, live real-time card updater, and "Save Changes" button issuing <code>PUT /api/events/:id</code>.
+    </div>
+  </div>
+
+  <!-- Screen 6: Admin Dashboard -->
+  <div class="ui-mock-card no-break">
+    <div class="ui-mock-header">
+      <span>8.6 Admin Panel & CSV Roster Export</span>
+      <span>Route: /admin</span>
+    </div>
+    <div class="ui-mock-body">
+      <strong>Visual Elements:</strong> High-level platform metrics, Event Inventory table with action buttons (View, Edit, Delete, Attendees), Attendee Directory displaying verified student phone numbers, colleges, and registration timestamps, and 1-click "Export Attendees to CSV" feature.
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 9: ER-DIAGRAM -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 9: ER-Diagram</h1>
+
+  <p>
+    The Entity-Relationship (ER) Diagram illustrates the conceptual data model of the Event Planning System. It defines the entities, their respective attributes, primary keys, and relationship cardinalities.
+  </p>
+
+  <div class="diagram-box">
+    <svg width="100%" height="400" viewBox="0 0 650 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- USER Entity -->
+      <rect x="30" y="50" width="180" height="230" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <rect x="30" y="50" width="180" height="35" rx="8" fill="#2563eb"/>
+      <text x="120" y="74" text-anchor="middle" font-weight="bold" font-size="14" fill="#ffffff">USER</text>
+      <text x="45" y="110" font-size="11" fill="#1e293b">🔑 <u>_id</u> (PK)</text>
+      <text x="45" y="135" font-size="11" fill="#1e293b">● name</text>
+      <text x="45" y="160" font-size="11" fill="#1e293b">● email (Unique)</text>
+      <text x="45" y="185" font-size="11" fill="#1e293b">● password (Hash)</text>
+      <text x="45" y="210" font-size="11" fill="#1e293b">● role (user/admin)</text>
+      <text x="45" y="235" font-size="11" fill="#1e293b">● college</text>
+      <text x="45" y="260" font-size="11" fill="#1e293b">● phone</text>
+
+      <!-- EVENT Entity -->
+      <rect x="440" y="30" width="180" height="330" rx="8" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+      <rect x="440" y="30" width="180" height="35" rx="8" fill="#db2777"/>
+      <text x="530" y="54" text-anchor="middle" font-weight="bold" font-size="14" fill="#ffffff">EVENT</text>
+      <text x="455" y="90" font-size="11" fill="#1e293b">🔑 <u>_id</u> (PK)</text>
+      <text x="455" y="115" font-size="11" fill="#1e293b">● title</text>
+      <text x="455" y="140" font-size="11" fill="#1e293b">● category</text>
+      <text x="455" y="165" font-size="11" fill="#1e293b">● date (YYYY-MM-DD)</text>
+      <text x="455" y="190" font-size="11" fill="#1e293b">● time</text>
+      <text x="455" y="215" font-size="11" fill="#1e293b">● location</text>
+      <text x="455" y="240" font-size="11" fill="#1e293b">● description</text>
+      <text x="455" y="265" font-size="11" fill="#1e293b">● image (URL)</text>
+      <text x="455" y="290" font-size="11" fill="#1e293b">● organizer</text>
+      <text x="455" y="315" font-size="11" fill="#1e293b">● seats / price</text>
+      <text x="455" y="340" font-size="11" fill="#1e293b">🔗 createdBy (FK)</text>
+
+      <!-- Relationship: ORGANIZES (1:N) -->
+      <polygon points="310,90 350,110 310,130 270,110" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+      <text x="310" y="114" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#7e22ce">ORGANIZES</text>
+
+      <line x1="210" y1="110" x2="270" y2="110" stroke="#9333ea" stroke-width="2"/>
+      <text x="220" y="105" font-size="11" font-weight="bold" fill="#9333ea">1</text>
+      <line x1="350" y1="110" x2="440" y2="110" stroke="#9333ea" stroke-width="2"/>
+      <text x="425" y="105" font-size="11" font-weight="bold" fill="#9333ea">N</text>
+
+      <!-- Relationship: REGISTERS_FOR (M:N) -->
+      <polygon points="310,230 360,255 310,280 260,255" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="310" y="259" text-anchor="middle" font-size="9" font-weight="bold" fill="#15803d">REGISTERS</text>
+
+      <line x1="210" y1="210" x2="260" y2="255" stroke="#16a34a" stroke-width="2"/>
+      <text x="218" y="228" font-size="11" font-weight="bold" fill="#16a34a">M</text>
+      <line x1="360" y1="255" x2="440" y2="270" stroke="#16a34a" stroke-width="2"/>
+      <text x="425" y="260" font-size="11" font-weight="bold" fill="#16a34a">N</text>
+
+      <!-- Embedded Attribute Box -->
+      <rect x="235" y="320" width="150" height="60" rx="4" fill="#f8fafc" stroke="#64748b" stroke-dasharray="3 3"/>
+      <text x="310" y="338" text-anchor="middle" font-size="10" font-weight="bold" fill="#334155">Sub-Schema Attribute</text>
+      <text x="310" y="354" text-anchor="middle" font-size="9" fill="#64748b">registeredAt (Timestamp)</text>
+      <text x="310" y="368" text-anchor="middle" font-size="9" fill="#64748b">Attendee phone & college</text>
+      <line x1="310" y1="280" x2="310" y2="320" stroke="#64748b" stroke-dasharray="2 2"/>
+    </svg>
+    <div class="diagram-caption">Figure 9.1: Entity-Relationship Diagram of Event Planning System</div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 10: SOFTWARE TESTING -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 10: Software Testing</h1>
+
+  <h2 class="section-title">10.1 Detailed Test Cases</h2>
+  <p>
+    Rigorous unit, integration, and user-acceptance testing was conducted across all components of EventHub. The table below documents the detailed test executions, expected outcomes, and validated results:
+  </p>
+
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th style="width: 10%;">TC ID</th>
+        <th style="width: 20%;">Module / Feature</th>
+        <th style="width: 25%;">Test Scenario</th>
+        <th style="width: 25%;">Expected Result</th>
+        <th style="width: 10%;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>TC-01</strong></td>
+        <td>Authentication</td>
+        <td>Register new student account with valid name, email, password, and college.</td>
+        <td>Password is bcrypt hashed, user document created in MongoDB, JWT token returned.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-02</strong></td>
+        <td>Authentication</td>
+        <td>Attempt login with incorrect password.</td>
+        <td>System returns HTTP 401 Unauthorized with clear message "Invalid credentials".</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-03</strong></td>
+        <td>Event Registration</td>
+        <td>Unauthenticated guest attempts to click "Register" on Event Details page.</td>
+        <td>Interactive padlock prompt is displayed; user is redirected to <code>/login</code>.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-04</strong></td>
+        <td>Event Registration</td>
+        <td>Authenticated student registers for an active event with available capacity.</td>
+        <td>User sub-schema inserted in <code>registeredUsers</code> array, capacity bar updates.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-05</strong></td>
+        <td>Seat Quota Guard</td>
+        <td>Student attempts to register for an event whose seats are completely filled (0 left).</td>
+        <td>Button changes to "Event Full" (disabled); duplicate or overflow booking blocked.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-06</strong></td>
+        <td>Event Creation</td>
+        <td>Organizer attempts to select a past date in Event Creation calendar picker.</td>
+        <td>Past dates disabled via <code>min=Today</code>; validator blocks past dates.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-07</strong></td>
+        <td>Media Support</td>
+        <td>Organizer pastes an Instagram post link (<code>instagram.com/p/...</code>).</td>
+        <td>System normalizes URL to media endpoint with <code>no-referrer</code> policy; image loads.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-08</strong></td>
+        <td>Event Editing</td>
+        <td>Organizer changes event timing and venue in Edit Studio (<code>/events/:id/edit</code>).</td>
+        <td><code>PUT /api/events/:id</code> updates MongoDB; live preview card reflects changes.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-09</strong></td>
+        <td>Admin CSV Export</td>
+        <td>Administrator clicks "Export Attendees CSV" for an event with 50 registrants.</td>
+        <td>Browser downloads formatted <code>.csv</code> file containing name, email, college, phone.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+      <tr>
+        <td><strong>TC-10</strong></td>
+        <td>Responsive UI</td>
+        <td>Application accessed on mobile screen viewport (375px width).</td>
+        <td>Mobile menu drawer toggles cleanly; cards stack in single column without overflow.</td>
+        <td><span class="badge-tag" style="background:#dcfce7; color:#15803d;">PASS</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 11: REFERENCES -->
+<!-- ========================================================= -->
+<div class="page-break">
+  <h1 class="chapter-title">Chapter 11: References</h1>
+
+  <ol>
+    <li>
+      <strong>React Documentation:</strong> Meta Open Source (2024), <em>"React — A JavaScript Library for Building User Interfaces"</em>, Official Documentation: https://react.dev/
+    </li>
+    <li>
+      <strong>MongoDB Manual:</strong> MongoDB Inc. (2024), <em>"MongoDB Documentation: Data Modeling, Document Validation, and Sharding"</em>, Official Guide: https://www.mongodb.com/docs/
+    </li>
+    <li>
+      <strong>Express.js API Reference:</strong> StrongLoop & OpenJS Foundation (2024), <em>"Express — Fast, Unopinionated, Minimalist Web Framework for Node.js"</em>, Documentation: https://expressjs.com/
+    </li>
+    <li>
+      <strong>JWT Authentication RFC 7519:</strong> Jones, M., Bradley, J., & Sakimura, N. (2015), <em>"JSON Web Token (JWT)"</em>, Internet Engineering Task Force (IETF) RFC 7519.
+    </li>
+    <li>
+      <strong>Mongoose ODM Guide:</strong> Automattic Inc. (2024), <em>"Mongoose — Elegant MongoDB Object Modeling for Node.js"</em>, https://mongoosejs.com/
+    </li>
+    <li>
+      <strong>Vite Build Tool:</strong> You, Evan et al. (2024), <em>"Vite — Next Generation Frontend Tooling"</em>, https://vitejs.dev/
+    </li>
+  </ol>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAPTER 12: BIBLIOGRAPHY -->
+<!-- ========================================================= -->
+<div>
+  <h1 class="chapter-title">Chapter 12: Bibliography</h1>
+
+  <ol>
+    <li>
+      <strong>Flanagan, David (2020):</strong> <em>"JavaScript: The Definitive Guide — Master the World's Most-Used Programming Language"</em> (7th Edition), O'Reilly Media. ISBN: 978-1491952023.
+    </li>
+    <li>
+      <strong>Banks, Alex & Porcello, Eve (2020):</strong> <em>"Learning React: Modern Patterns for Developing React Apps"</em> (2nd Edition), O'Reilly Media. ISBN: 978-1492078654.
+    </li>
+    <li>
+      <strong>Bradshaw, Shannon, Chodorow, Kristina, & Dirolf, Mike (2019):</strong> <em>"MongoDB: The Definitive Guide — Powerful and Scalable Data Storage"</em> (3rd Edition), O'Reilly Media. ISBN: 978-1491954461.
+    </li>
+    <li>
+      <strong>Herron, David (2020):</strong> <em>"Node.js Web Development: Server-side development with Node 14 and Express"</em> (5th Edition), Packt Publishing. ISBN: 978-1838987381.
+    </li>
+    <li>
+      <strong>W3C (World Wide Web Consortium) (2023):</strong> <em>"Cascading Style Sheets Level 3 (CSS3) Specification & Flexbox/Grid Standards"</em>, https://www.w3.org/Style/CSS/
+    </li>
+    <li>
+      <strong>GitHub Repository:</strong> Maurya, Priyanshu Kumar (2026), <em>"Event-Planning-System (EventHub)"</em>, Open Source Repository: https://github.com/Priyanshu-kumar-maurya/Event-Planning-System-
+    </li>
+  </ol>
+</div>
+
+</body>
+</html>
