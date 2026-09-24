@@ -19,11 +19,13 @@ let isConnected = false;
 const connectDB = async () => {
   if (isConnected) return;
   try {
-    const db = await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/eventhub_db");
+    const db = await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/eventhub_db", {
+      serverSelectionTimeoutMS: 5000,
+    });
     isConnected = db.connections[0].readyState;
     console.log("✅ Connected to MongoDB");
   } catch (err) {
-    console.error("❌ MongoDB connection error:", err.message);
+    console.warn("⚠️ MongoDB connection note:", err.message);
   }
 };
 
@@ -62,11 +64,10 @@ app.use((err, req, res, next) => {
 
 // ── Local Server Start ──────────────────────
 if (require.main === module) {
-  connectDB().then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
+  connectDB();
 }
 
 module.exports = app;

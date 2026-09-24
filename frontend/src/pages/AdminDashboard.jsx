@@ -18,6 +18,12 @@ import {
   FiClock,
   FiCheckCircle,
   FiEdit2,
+  FiBarChart2,
+  FiPieChart,
+  FiTrendingUp,
+  FiLayers,
+  FiPercent,
+  FiAward,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { getEvents, getAllUsers, getAdminStats, deleteEvent } from "../services/api";
@@ -145,6 +151,80 @@ export default function AdminDashboard() {
     0
   );
 
+  // Helper for category chart colors
+  const getCategoryColor = (cat) => {
+    switch (cat?.toLowerCase()) {
+      case "technology":
+      case "tech":
+        return "#8b5cf6"; // Purple
+      case "cultural":
+        return "#ec4899"; // Pink
+      case "sports":
+        return "#10b981"; // Emerald
+      case "business":
+        return "#f59e0b"; // Amber
+      case "art":
+        return "#06b6d4"; // Cyan
+      case "music":
+        return "#f43f5e"; // Rose
+      case "food":
+        return "#fb923c"; // Orange
+      case "academic":
+        return "#3b82f6"; // Blue
+      default:
+        return "#6366f1"; // Indigo
+    }
+  };
+
+  // ── Analytics Computation ──────────────────────────
+  const categoryStats = events.reduce((acc, ev) => {
+    const cat = ev.category || "General";
+    const regs = ev.registeredUsers?.length || ev.registered || 0;
+    const rev = regs * (ev.price || 0);
+    if (!acc[cat]) {
+      acc[cat] = { count: 0, registrations: 0, revenue: 0, capacity: 0 };
+    }
+    acc[cat].count += 1;
+    acc[cat].registrations += regs;
+    acc[cat].revenue += rev;
+    acc[cat].capacity += ev.seats || 0;
+    return acc;
+  }, {});
+
+  const categoryList = Object.keys(categoryStats)
+    .map((cat) => ({
+      category: cat,
+      ...categoryStats[cat],
+    }))
+    .sort((a, b) => b.registrations - a.registrations);
+
+  const totalSeatsAllEvents = events.reduce((acc, e) => acc + (e.seats || 0), 0);
+  const overallOccupancy =
+    totalSeatsAllEvents > 0
+      ? Math.round((totalRegistrationsCount / totalSeatsAllEvents) * 100)
+      : 0;
+
+  const freeEventsCount = events.filter((e) => !e.price || e.price === 0).length;
+  const paidEventsCount = events.filter((e) => e.price > 0).length;
+
+  const topEventsByReg = [...events]
+    .map((e) => {
+      const reg = e.registeredUsers?.length || e.registered || 0;
+      const seats = e.seats || 1;
+      const pct = Math.min(100, Math.round((reg / seats) * 100));
+      return {
+        id: e._id,
+        title: e.title,
+        category: e.category,
+        registered: reg,
+        seats: e.seats || 0,
+        price: e.price || 0,
+        revenue: reg * (e.price || 0),
+        pct,
+      };
+    })
+    .sort((a, b) => b.registered - a.registered);
+
   return (
     <div className="page-wrapper admin-page">
       {/* Header */}
@@ -212,6 +292,12 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("events")}
           >
             <FiCalendar /> All Events ({events.length})
+          </button>
+          <button
+            className={`admin-tab-btn ${activeTab === "analytics" ? "active" : ""}`}
+            onClick={() => setActiveTab("analytics")}
+          >
+            <FiBarChart2 /> Analytics & Graphs 📊
           </button>
           <button
             className={`admin-tab-btn ${activeTab === "attendees" ? "active" : ""}`}
@@ -523,6 +609,312 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── Analytics & Visual Graphs Tab ────────────────── */}
+        {activeTab === "analytics" && (
+          <div className="admin-analytics-view animate-fadeIn">
+            {/* Top Insight Cards */}
+            <div className="analytics-summary-grid">
+              <div className="summary-pill-card glass-card">
+                <div className="summary-pill-icon purple"><FiPercent /></div>
+                <div>
+                  <div className="summary-pill-title">Seat Occupancy Rate</div>
+                  <div className="summary-pill-val">{overallOccupancy}%</div>
+                  <div className="summary-pill-sub">{totalRegistrationsCount} of {totalSeatsAllEvents} total seats booked</div>
+                </div>
+              </div>
+
+              <div className="summary-pill-card glass-card">
+                <div className="summary-pill-icon pink"><FiAward /></div>
+                <div>
+                  <div className="summary-pill-title">Top Registered Event</div>
+                  <div className="summary-pill-val truncate-title">
+                    {topEventsByReg[0]?.title || "N/A"}
+                  </div>
+                  <div className="summary-pill-sub">
+                    {topEventsByReg[0]?.registered || 0} attendees ({topEventsByReg[0]?.pct || 0}% filled)
+                  </div>
+                </div>
+              </div>
+
+              <div className="summary-pill-card glass-card">
+                <div className="summary-pill-icon green"><FiLayers /></div>
+                <div>
+                  <div className="summary-pill-title">Most Popular Category</div>
+                  <div className="summary-pill-val">
+                    {categoryList[0]?.category || "General"}
+                  </div>
+                  <div className="summary-pill-sub">
+                    {categoryList[0]?.registrations || 0} registrations across {categoryList[0]?.count || 0} events
+                  </div>
+                </div>
+              </div>
+
+              <div className="summary-pill-card glass-card">
+                <div className="summary-pill-icon orange"><FiDollarSign /></div>
+                <div>
+                  <div className="summary-pill-title">Ticketing Model</div>
+                  <div className="summary-pill-val">₹{stats?.totalRevenue || totalRevenueEst}</div>
+                  <div className="summary-pill-sub">
+                    {paidEventsCount} Paid ({Math.round((paidEventsCount / (events.length || 1)) * 100)}%) · {freeEventsCount} Free
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Graphs Grid: 2 Columns */}
+            <div className="analytics-charts-grid">
+              {/* Chart 1: Event Registrations vs Seat Capacity Bar Chart */}
+              <div className="analytics-chart-card glass-card">
+                <div className="chart-header">
+                  <div>
+                    <h3 className="chart-title"><FiBarChart2 /> Event Registrations vs Seat Capacity</h3>
+                    <p className="chart-subtitle">Comparing student registrations with total hall capacity</p>
+                  </div>
+                  <div className="chart-legend-mini">
+                    <span className="legend-indicator reg-indicator">● Registered</span>
+                    <span className="legend-indicator cap-indicator">○ Max Capacity</span>
+                  </div>
+                </div>
+
+                <div className="bar-chart-list">
+                  {topEventsByReg.slice(0, 6).map((ev) => {
+                    const maxCap = Math.max(...topEventsByReg.map((e) => e.seats || 1), 100);
+                    const regWidth = Math.min(100, Math.max(6, (ev.registered / maxCap) * 100));
+                    const capWidth = Math.min(100, Math.max(10, (ev.seats / maxCap) * 100));
+                    const barColor = getCategoryColor(ev.category);
+
+                    return (
+                      <div key={ev.id} className="bar-chart-row">
+                        <div className="bar-row-info">
+                          <span className="bar-event-title" title={ev.title}>{ev.title}</span>
+                          <span className="bar-event-meta">
+                            <span className="cat-dot" style={{ backgroundColor: barColor }} />
+                            {ev.category} · <strong>{ev.registered}</strong> / {ev.seats} seats
+                          </span>
+                        </div>
+
+                        <div className="bar-dual-track">
+                          {/* Capacity track */}
+                          <div
+                            className="bar-track-capacity"
+                            style={{ width: `${capWidth}%` }}
+                            title={`Max Capacity: ${ev.seats} seats`}
+                          />
+                          {/* Filled bar */}
+                          <div
+                            className="bar-fill-registered"
+                            style={{
+                              width: `${regWidth}%`,
+                              background: `linear-gradient(90deg, ${barColor} 0%, #a855f7 100%)`,
+                            }}
+                            title={`${ev.registered} registered (${ev.pct}% full)`}
+                          >
+                            <span className="bar-fill-label">{ev.registered}</span>
+                          </div>
+                        </div>
+
+                        <div className="bar-pct-badge-wrap">
+                          <span
+                            className="bar-pct-badge"
+                            style={{
+                              color: ev.pct >= 80 ? "#ec4899" : ev.pct >= 40 ? "#38bdf8" : "#94a3b8",
+                              borderColor: ev.pct >= 80 ? "rgba(236, 72, 153, 0.4)" : "rgba(56, 189, 248, 0.3)",
+                            }}
+                          >
+                            {ev.pct}% Full
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Chart 2: Category Distribution Donut Chart */}
+              <div className="analytics-chart-card glass-card">
+                <div className="chart-header">
+                  <div>
+                    <h3 className="chart-title"><FiPieChart /> Category Distribution</h3>
+                    <p className="chart-subtitle">Event share & total registrations grouped by category</p>
+                  </div>
+                  <span className="chart-badge">{categoryList.length} Categories</span>
+                </div>
+
+                <div className="donut-chart-flex">
+                  {/* SVG Donut Visual */}
+                  <div className="donut-svg-wrapper">
+                    <svg viewBox="0 0 200 200" className="donut-svg">
+                      {/* Background circle track */}
+                      <circle
+                        cx="100"
+                        cy="100"
+                        r="70"
+                        className="donut-bg-track"
+                      />
+                      {/* Slices */}
+                      {(() => {
+                        const C = 2 * Math.PI * 70; // ~439.82
+                        const totalCount = events.length || 1;
+                        let accumulatedOffset = 0;
+
+                        return categoryList.map((catItem) => {
+                          const sliceFraction = catItem.count / totalCount;
+                          const strokeLength = sliceFraction * C;
+                          const strokeOffset = -accumulatedOffset;
+                          accumulatedOffset += strokeLength;
+                          const color = getCategoryColor(catItem.category);
+
+                          return (
+                            <circle
+                              key={catItem.category}
+                              cx="100"
+                              cy="100"
+                              r="70"
+                              fill="none"
+                              stroke={color}
+                              strokeWidth="24"
+                              strokeDasharray={`${strokeLength} ${C - strokeLength}`}
+                              strokeDashoffset={strokeOffset}
+                              className="donut-slice"
+                              transform="rotate(-90 100 100)"
+                            />
+                          );
+                        });
+                      })()}
+                    </svg>
+                    <div className="donut-center-content">
+                      <span className="donut-center-num">{events.length}</span>
+                      <span className="donut-center-label">Events</span>
+                    </div>
+                  </div>
+
+                  {/* Category Legend & Breakdown List */}
+                  <div className="category-legend-list">
+                    {categoryList.map((c) => {
+                      const color = getCategoryColor(c.category);
+                      const sharePct = Math.round((c.count / (events.length || 1)) * 100);
+                      return (
+                        <div key={c.category} className="cat-legend-row">
+                          <div className="cat-legend-left">
+                            <span className="cat-legend-chip" style={{ backgroundColor: color }} />
+                            <div>
+                              <div className="cat-legend-name">{c.category}</div>
+                              <div className="cat-legend-detail">{c.registrations} students registered</div>
+                            </div>
+                          </div>
+                          <div className="cat-legend-right">
+                            <span className="cat-legend-count">{c.count} {c.count === 1 ? "event" : "events"}</span>
+                            <span className="cat-legend-pct">{sharePct}%</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Chart 3: Revenue Breakdown by Category */}
+              <div className="analytics-chart-card glass-card">
+                <div className="chart-header">
+                  <div>
+                    <h3 className="chart-title"><FiTrendingUp /> Estimated Revenue by Category</h3>
+                    <p className="chart-subtitle">Collection from registrations & ticket prices (₹)</p>
+                  </div>
+                  <span className="chart-badge">₹{totalRevenueEst.toLocaleString("en-IN")} Total</span>
+                </div>
+
+                <div className="revenue-bars-container">
+                  {categoryList.map((c) => {
+                    const maxRevenue = Math.max(...categoryList.map((i) => i.revenue || 0), 1000);
+                    const revPct = Math.min(100, Math.max(c.revenue > 0 ? 10 : 3, Math.round((c.revenue / maxRevenue) * 100)));
+                    const color = getCategoryColor(c.category);
+
+                    return (
+                      <div key={c.category} className="revenue-item">
+                        <div className="revenue-item-header">
+                          <div className="rev-cat-title-wrap">
+                            <span className="cat-dot" style={{ backgroundColor: color }} />
+                            <span className="rev-cat-name">{c.category}</span>
+                          </div>
+                          <span className="rev-cat-amount">₹{c.revenue.toLocaleString("en-IN")}</span>
+                        </div>
+                        <div className="rev-bar-track">
+                          <div
+                            className="rev-bar-fill"
+                            style={{
+                              width: `${revPct}%`,
+                              background: `linear-gradient(90deg, ${color} 0%, #10b981 100%)`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Chart 4: Free vs Paid & Booking Dynamics */}
+              <div className="analytics-chart-card glass-card">
+                <div className="chart-header">
+                  <div>
+                    <h3 className="chart-title"><FiCheckCircle /> Pricing & Registration Dynamics</h3>
+                    <p className="chart-subtitle">Analysis of Free vs Paid registration appeal and booking yields</p>
+                  </div>
+                  <span className="chart-badge">Ticketing Insights</span>
+                </div>
+
+                <div className="pricing-dynamics-wrap">
+                  {/* Split Bar */}
+                  <div className="split-progress-wrap">
+                    <div className="split-labels">
+                      <span className="split-label free-text">
+                        🎁 Free Events ({freeEventsCount} - {Math.round((freeEventsCount / (events.length || 1)) * 100)}%)
+                      </span>
+                      <span className="split-label paid-text">
+                        🎟️ Paid Events ({paidEventsCount} - {Math.round((paidEventsCount / (events.length || 1)) * 100)}%)
+                      </span>
+                    </div>
+                    <div className="split-bar-track">
+                      <div
+                        className="split-bar-free"
+                        style={{ width: `${(freeEventsCount / (events.length || 1)) * 100}%` }}
+                        title={`Free: ${freeEventsCount} events`}
+                      />
+                      <div
+                        className="split-bar-paid"
+                        style={{ width: `${(paidEventsCount / (events.length || 1)) * 100}%` }}
+                        title={`Paid: ${paidEventsCount} events`}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Highlights Grid */}
+                  <div className="pricing-insights-boxes">
+                    <div className="pricing-box">
+                      <span className="pricing-box-val">
+                        {events.filter((e) => (e.registeredUsers?.length || e.registered || 0) > 0).length}
+                      </span>
+                      <span className="pricing-box-label">Events with Active Bookings</span>
+                    </div>
+                    <div className="pricing-box">
+                      <span className="pricing-box-val">
+                        {events.length > 0 ? Math.round(totalRegistrationsCount / events.length) : 0}
+                      </span>
+                      <span className="pricing-box-label">Avg Registrations / Event</span>
+                    </div>
+                    <div className="pricing-box">
+                      <span className="pricing-box-val">
+                        ₹{paidEventsCount > 0 ? Math.round(totalRevenueEst / (paidEventsCount || 1)) : 0}
+                      </span>
+                      <span className="pricing-box-label">Avg Yield per Paid Event</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

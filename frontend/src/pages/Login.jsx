@@ -117,6 +117,35 @@ export default function Login() {
             </button>
           </form>
 
+          {/* Quick Demo Credentials */}
+          <div className="demo-logins-box">
+            <span className="demo-label">⚡ Quick Fill Demo Accounts</span>
+            <div className="demo-btns">
+              <button
+                type="button"
+                className="demo-btn admin-demo"
+                title="Click to fill Admin credentials"
+                onClick={() => {
+                  setEmail("admin@eventhub.com");
+                  setPassword("admin123");
+                }}
+              >
+                👑 Admin Demo
+              </button>
+              <button
+                type="button"
+                className="demo-btn student-demo"
+                title="Click to fill Student credentials"
+                onClick={() => {
+                  setEmail("rahul@nsut.ac.in");
+                  setPassword("user123");
+                }}
+              >
+                👤 Student Demo
+              </button>
+            </div>
+          </div>
+
           {/* Footer */}
           <div className="auth-footer">
             <p>
