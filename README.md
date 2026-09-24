@@ -1,31 +1,60 @@
 # 🎉 EventHub — Campus Event Planning & Management System
 
-> A full-stack MERN (MongoDB, Express, React, Node.js) College Event Planning & Registration System featuring User Authentication, strict participation access control, real-time MongoDB attendee tracking, and a dedicated Administrator Control Center.
+<p align="center">
+  <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80" alt="EventHub Banner" width="100%" style="border-radius: 12px; max-height: 380px; object-fit: cover;" />
+</p>
+
+<p align="center">
+  <strong>A Modern Full-Stack MERN Platform for Campus Events, Ticket Registrations, and Real-Time Analytics</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express-5.2-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/MongoDB-Atlas%20%2F%20Local-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Vite-8.2-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+</p>
+
+---
+
+## 👥 Project Team & Contributors
+
+| No. | Student / Contributor Name | Role & Contribution |
+|:---:|:---|:---|
+| 1 | **Annu Maurya** | Frontend Architecture, UI/UX Glassmorphism & Responsive Design |
+| 2 | **Aanchal Pandey** | Backend REST APIs, JWT Authentication & Database Schemas |
+| 3 | **Krishna Ojha** | Data Analytics, Visual Graphs, Documentation & QA Testing |
+| 4 | **Priyanshu Kumar Maurya** | Full-Stack Integration, Deployment & Optimization |
 
 ---
 
 ## 🌟 Key Features
 
-### 👤 Student & User Experience
-- **Discover Events:** Browse and search campus hackathons, fests, workshops, sports, and cultural events with dynamic category filtering.
-- **Strict Participation Control:** Registration is strictly secured — only logged-in students can register for events.
-- **1-Click Registration:** Auto-fills verified student credentials and updates seat capacity in real-time.
-- **Personal Student Dashboard:** View and manage all registered events and organized events in one place.
-- **Live Seat Availability:** Interactive progress bars showing live percentage of filled seats.
+### 👤 Student & Attendee Experience
+- **🎯 Discover Campus Events:** Browse hackathons, cultural festivals, sports leagues, entrepreneur summits, and workshops with instant search and category filters.
+- **🛡️ Strict Participation Security:** Only authenticated students can register; registration dynamically links verified student details (Name, College, Email, Phone).
+- **⚡ 1-Click Instant Booking:** Direct seat booking with real-time seat decrement and prevention of duplicate registrations.
+- **📱 100% Mobile Responsive:** Optimized Glassmorphism UI across phones, tablets, and desktops.
+- **📸 Smart Image CDN & Fallbacks:** Supports external image URLs (Instagram CDN, Unsplash, Imgur) with automatic high-res fallback visuals.
+- **🗓️ Smart Date Validation:** Past dates are automatically disabled; only valid future dates and times are allowed for new events.
+- **✏️ Event Editing:** Organizers can update event title, timings, venue, seat count, and pricing anytime.
 
-### 🛡️ Dedicated Admin Control Center (`/admin`)
-- **Live MongoDB Analytics:** Real-time metrics for total events, total registrations, registered students, and revenue generated.
-- **Event Inventory Management:** View, search, inspect, and delete events directly from MongoDB.
-- **Registered Attendees Directory:** Select any event to view the full directory of registered students (Name, Email, College/Branch, Phone, Registration Timestamp).
-- **📥 CSV / Excel Export:** 1-click export of attendee lists for organizers.
-- **User Management Directory:** Overview of all accounts and roles on the platform.
+### 🛡️ Administrator Control Center (`/admin`)
+- **📊 Visual Graphs & Data Analytics:**
+  - **Registrations vs Capacity Bar Graph:** Dual-track animated bars comparing enrolled attendees against maximum venue limits.
+  - **Category Share SVG Donut Chart:** Interactive zero-dependency SVG donut graphic with category color-coding and percentage breakdown.
+  - **Category Revenue Breakdown:** Real-time financial collection tracking in Indian Rupees (₹).
+  - **Ticketing & Pricing Dynamics:** Comparative analysis of Free vs Paid events and average attendance yield.
+- **📋 Registered Attendees Directory:** Live attendee lists per event with student names, emails, colleges, and contact numbers.
+- **📥 CSV / Excel Export:** 1-click download of attendee rosters for on-ground gate checks and certificates.
+- **👑 1-Click Demo Login:** Dedicated `👑 Admin Demo` and `👤 Student Demo` buttons on `/login` for immediate examiner demonstrations.
 
-### 🔐 Security & Architecture
-- **JWT (JSON Web Token) Authentication**
-- **bcryptjs Password Hashing**
-- **Role-Based Authorization (Student vs Admin)**
-- **Express REST API + Mongoose ODM**
-- **Vanilla CSS Glassmorphism Design System**
+### 🔐 Security & Engineering Highlights
+- **JWT (JSON Web Token) Security with 30-day session expiry**
+- **bcryptjs Salted Password Hashing**
+- **Role-Based Access Control (`admin` vs `user`)**
+- **Express 5.2 Async Error Boundaries & MongoDB Auto-Reconnect**
 
 ---
 
@@ -106,26 +135,56 @@ npm run dev
 ## 📡 REST API Endpoints
 
 ### 🔐 Authentication (`/api/auth`)
-- `POST /api/auth/register` — Register a new student/organizer
-- `POST /api/auth/login` — Login user & return JWT token
-- `GET  /api/auth/me` — Get current logged-in user (Protected)
-- `GET  /api/auth/users` — Get all users (Admin only)
-- `GET  /api/auth/admin-stats` — Get platform metrics (Admin only)
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | Register new student or organizer account | Public |
+| `POST` | `/api/auth/login` | Authenticate user & receive signed JWT | Public |
+| `GET` | `/api/auth/me` | Fetch active user profile from session | Protected (JWT) |
+| `GET` | `/api/auth/users` | List all registered accounts & roles | Admin Only |
+| `GET` | `/api/auth/admin-stats` | High-level metrics & analytics counts | Admin Only |
 
 ### 🎪 Events (`/api/events`)
-- `GET    /api/events` — Get all events (supports `?category=`, `?search=`, `?sort=`)
-- `GET    /api/events/:id` — Get single event by ID
-- `POST   /api/events` — Create new event (Protected)
-- `PUT    /api/events/:id` — Update event
-- `DELETE /api/events/:id` — Delete event (Admin/Organizer)
-- `POST   /api/events/:id/register` — Register user for event (Strictly Protected)
-- `POST   /api/events/:id/unregister` — Unregister from event (Protected)
-- `GET    /api/events/user/registered` — Get events registered by current user (Protected)
-- `GET    /api/events/user/created` — Get events created by current user (Protected)
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/api/events` | List all events (`?search=`, `?category=`, `?sort=`) | Public |
+| `GET` | `/api/events/:id` | Get comprehensive details of an event | Public |
+| `POST` | `/api/events` | Create new event with date/seat constraints | Protected (JWT) |
+| `PUT` | `/api/events/:id` | Edit event details, timings, seats, or pricing | Organizer/Admin |
+| `DELETE` | `/api/events/:id` | Remove event from database | Organizer/Admin |
+| `POST` | `/api/events/:id/register` | Register student for event & decrement seats | Student (JWT) |
+| `POST` | `/api/events/:id/unregister` | Cancel registration & restore seats | Student (JWT) |
+| `GET` | `/api/events/user/registered` | List events booked by current user | Protected (JWT) |
+| `GET` | `/api/events/user/created` | List events organized by current user | Protected (JWT) |
 
 ---
 
-## 🎓 College Project Submission Info
+## 📊 Data Visualization & Graph Highlights
+
+- **Dual-Track Capacity Graph:** Real-time visual comparison of enrolled attendees against maximum venue limits with `% Full` badges.
+- **SVG Donut Chart:** Zero-dependency, pure SVG slice projection with dynamic circumference mapping for category distribution.
+- **Ticket Yield Metrics:** Detailed breakdown of revenue generated across free and paid campus events.
+- **Dynamic Leaderboard:** Auto-sorts events by occupancy rate to highlight trending campus activities.
+
+---
+
+## 📄 College Project Submission & Report
+The repository includes a ready-to-print **55+ page formal academic project report** covering:
+- **System Architecture & Data Flow Diagrams:** Context Diagram, DFD Level 0, Level 1, Level 2
+- **Database Schema & ER Diagrams:** Detailed Entity Relationship design with foreign references
+- **Component Hierarchy:** React Router tree and AuthContext state propagation
+- **Comprehensive Test Cases:** Unit, integration, security, and edge-case test matrices
+- **Step-by-Step UI Walkthrough:** Explanations and layout breakdowns for every screen
+- 📁 **Download PDF:** `Event_Planning_System_College_Project_Report.pdf` (Included in repository root)
+- 🌐 **HTML Version:** `college_project_report.html` (Standalone, printable in browser)
+
+---
+
+## 🎓 Academic Submission Details
 - **Project Name:** Event Planning & Management System (EventHub)
-- **Tech Stack:** React, Node.js, Express.js, MongoDB, JWT, Mongoose, CSS3 Glassmorphism
-- **Repository:** https://github.com/Priyanshu-kumar-maurya/Event-Planning-System-
+- **Tech Stack:** MERN (MongoDB, Express.js, React 19, Node.js) + Vite + CSS3 Glassmorphism
+- **Repository:** [https://github.com/Priyanshu-kumar-maurya/Event-Planning-System-](https://github.com/Priyanshu-kumar-maurya/Event-Planning-System-)
+
+---
+
+## 📄 License
+This project is open-source and developed for academic and campus management purposes under the [MIT License](LICENSE).
