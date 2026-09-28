@@ -105,10 +105,16 @@ export default function AdminDashboard() {
       alert("No attendees to export for this event!");
       return;
     }
-    const headers = ["Name,Email,College,Phone,Registered At\n"];
+    const headers = [
+      "Name,Email,College,Phone,Payment Status,Amount,Transaction ID,Registered At\n",
+    ];
     const rows = selectedEvent.registeredUsers.map(
       (u) =>
-        `"${u.name}","${u.email}","${u.college || "N/A"}","${u.phone || "N/A"}","${new Date(u.registeredAt).toLocaleString()}"\n`
+        `"${u.name}","${u.email}","${u.college || "N/A"}","${u.phone || "N/A"}","${
+          u.paymentStatus || (selectedEvent.price > 0 ? "completed" : "free")
+        }","₹${u.paymentAmount || selectedEvent.price || 0}","${
+          u.transactionId || "N/A"
+        }","${new Date(u.registeredAt).toLocaleString()}"\n`
     );
     const blob = new Blob([...headers, ...rows], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
@@ -504,6 +510,7 @@ export default function AdminDashboard() {
                       <th>Email Address</th>
                       <th>College / Department</th>
                       <th>Contact Phone</th>
+                      <th>Payment Status</th>
                       <th>Registration Date</th>
                     </tr>
                   </thead>
@@ -527,6 +534,19 @@ export default function AdminDashboard() {
                         </td>
                         <td>
                           <span className="attendee-meta-item"><FiPhone /> {attendee.phone || "—"}</span>
+                        </td>
+                        <td>
+                          {attendee.paymentStatus === "completed" || (selectedEvent.price > 0 && attendee.paymentStatus !== "free") ? (
+                            <span
+                              className="badge badge-green"
+                              title={`Txn ID: ${attendee.transactionId || "Verified"}`}
+                              style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+                            >
+                              ₹{attendee.paymentAmount || selectedEvent.price} Paid · {attendee.paymentMethod?.toUpperCase() || "UPI"}
+                            </span>
+                          ) : (
+                            <span className="badge badge-purple">Free Pass</span>
+                          )}
                         </td>
                         <td>
                           <span className="reg-time-tag">

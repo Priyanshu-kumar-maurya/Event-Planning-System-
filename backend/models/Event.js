@@ -27,6 +27,23 @@ const registeredUserSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    paymentStatus: {
+      type: String,
+      enum: ["free", "completed", "pending", "failed"],
+      default: "free",
+    },
+    paymentAmount: {
+      type: Number,
+      default: 0,
+    },
+    paymentMethod: {
+      type: String,
+      default: "free",
+    },
+    transactionId: {
+      type: String,
+      default: "",
+    },
   },
   { _id: true }
 );

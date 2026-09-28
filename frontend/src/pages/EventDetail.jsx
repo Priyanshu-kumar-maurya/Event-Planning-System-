@@ -16,10 +16,12 @@ import {
   FiLock,
   FiUserPlus,
   FiEdit2,
+  FiCreditCard,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { getEventById, registerForEvent } from "../services/api";
 import { normalizeImageUrl, handleImageError } from "../utils/imageHelper";
+import PaymentModal from "../components/PaymentModal";
 import "./EventDetail.css";
 
 export default function EventDetail() {
@@ -33,6 +35,7 @@ export default function EventDetail() {
   const [liked, setLiked] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
   const fetchEvent = async () => {
     try {
@@ -73,9 +76,18 @@ export default function EventDetail() {
 
     if (alreadyRegistered || !event) return;
 
+    // If paid event, open the checkout payment modal
+    if (event.price > 0) {
+      setIsPaymentOpen(true);
+      return;
+    }
+
+    // Free event: direct registration
     try {
       setRegisterLoading(true);
-      const updated = await registerForEvent(event._id);
+      const updated = await registerForEvent(event._id, {
+        paymentInfo: { status: "free", amount: 0, method: "free" },
+      });
       setEvent(updated);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 5000);
@@ -83,6 +95,16 @@ export default function EventDetail() {
       alert(err.message);
     } finally {
       setRegisterLoading(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentInfo) => {
+    try {
+      const updated = await registerForEvent(event._id, { paymentInfo });
+      setEvent(updated);
+      setShowSuccess(true);
+    } catch (err) {
+      alert(err.message || "Registration failed after payment");
     }
   };
 
@@ -349,7 +371,7 @@ export default function EventDetail() {
               >
                 {registerLoading ? (
                   <>
-                    <FiLoader className="spin-icon" /> Registering...
+                    <FiLoader className="spin-icon" /> Processing...
                   </>
                 ) : alreadyRegistered ? (
                   <>
@@ -357,9 +379,13 @@ export default function EventDetail() {
                   </>
                 ) : isFull ? (
                   "Event Full"
+                ) : event.price > 0 ? (
+                  <>
+                    <FiCreditCard /> Pay ₹{event.price} & Book Seat
+                  </>
                 ) : (
                   <>
-                    <FiCheckCircle /> Confirm Registration as {user.name.split(" ")[0]}
+                    <FiCheckCircle /> Confirm Free Registration ({user.name.split(" ")[0]})
                   </>
                 )}
               </button>
@@ -422,6 +448,15 @@ export default function EventDetail() {
           </div>
         </div>
       </div>
+
+      {/* Payment Gateway Checkout Modal */}
+      <PaymentModal
+        event={event}
+        user={user}
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </div>
   );
 }

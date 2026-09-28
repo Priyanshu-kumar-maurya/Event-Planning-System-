@@ -238,6 +238,10 @@ router.post("/:id/register", protect, async (req, res) => {
       });
     }
 
+    // Read payment details if event is paid
+    const paymentInfo = req.body.paymentInfo || {};
+    const isPaid = (event.price || 0) > 0;
+
     // Add attendee to registeredUsers array
     event.registeredUsers.push({
       userId: attendeeUserId,
@@ -246,6 +250,12 @@ router.post("/:id/register", protect, async (req, res) => {
       phone: attendeePhone,
       college: attendeeCollege,
       registeredAt: new Date(),
+      paymentStatus: isPaid ? (paymentInfo.status || "completed") : "free",
+      paymentAmount: isPaid ? (paymentInfo.amount || event.price) : 0,
+      paymentMethod: isPaid ? (paymentInfo.method || "upi") : "free",
+      transactionId: isPaid
+        ? (paymentInfo.transactionId || `TXN_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`)
+        : "",
     });
 
     // Update count
