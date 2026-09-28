@@ -552,6 +552,52 @@
   }
 }
 
+/* Organizer Payment Receiving Setup Box */
+.payment-receiver-box {
+  margin-top: 18px;
+  padding: 20px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px dashed rgba(139, 92, 246, 0.45);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.receiver-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.receiver-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 3px 10px;
+  border-radius: 20px;
+  width: fit-content;
+  margin-bottom: 4px;
+}
+
+.receiver-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.receiver-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
 @media (max-width: 640px) {
   .create-header {
     padding: 28px 0 22px;

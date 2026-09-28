@@ -17,6 +17,8 @@ import {
   FiUserPlus,
   FiArrowLeft,
   FiUser,
+  FiSmartphone,
+  FiCreditCard,
 } from "react-icons/fi";
 import { categories } from "../data/mockEvents";
 import { createEvent } from "../services/api";
@@ -42,6 +44,9 @@ const initialForm = {
   description: "",
   seats: "",
   price: "",
+  organizerUpiId: "",
+  organizerPayeeName: "",
+  organizerQrCode: "",
   tags: "",
   image: "",
   organizer: "",
@@ -391,6 +396,71 @@ export default function CreateEvent() {
                   </div>
                 </div>
               </div>
+
+              {/* Organizer Payment Receiving Setup (for paid events) */}
+              {Number(form.price) > 0 && (
+                <div className="payment-receiver-box animate-fadeIn">
+                  <div className="receiver-header">
+                    <span className="receiver-badge">
+                      <FiSmartphone /> Organizer Payment Receiving Setup
+                    </span>
+                    <h4 className="receiver-title">Aapka Paisa Kisme Aayega? (Receiving Account)</h4>
+                    <p className="receiver-desc">
+                      Jab koi student is event ka ticket buy karega, to payment aapke is UPI ID / Account par transfer hogi.
+                    </p>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="organizerUpiId">
+                        Aapka UPI ID (GPay / PhonePe / Paytm / BHIM)
+                      </label>
+                      <input
+                        id="organizerUpiId"
+                        name="organizerUpiId"
+                        type="text"
+                        className="form-input"
+                        placeholder="e.g. 9812345678@paytm ya techclub@okaxis"
+                        value={form.organizerUpiId}
+                        onChange={handleChange}
+                      />
+                      <span className="input-tip">
+                        💡 Students ko checkout ke time yahi UPI ID aur QR Code dikhega.
+                      </span>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="organizerPayeeName">
+                        Account Holder / Club Name
+                      </label>
+                      <input
+                        id="organizerPayeeName"
+                        name="organizerPayeeName"
+                        type="text"
+                        className="form-input"
+                        placeholder="e.g. Tech Club NSUT ya Annu Maurya"
+                        value={form.organizerPayeeName}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="organizerQrCode">
+                      Custom Scanner / QR Code Image URL (Optional)
+                    </label>
+                    <input
+                      id="organizerQrCode"
+                      name="organizerQrCode"
+                      type="url"
+                      className="form-input"
+                      placeholder="Paste image link of your custom UPI QR scanner if available"
+                      value={form.organizerQrCode}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Media & Tags */}

@@ -50,6 +50,13 @@
 - **📥 CSV / Excel Export:** 1-click download of attendee rosters for on-ground gate checks and certificates.
 - **👑 1-Click Demo Login:** Dedicated `👑 Admin Demo` and `👤 Student Demo` buttons on `/login` for immediate examiner demonstrations.
 
+### 💳 Payment Gateway & Organizer UPI Receiving System
+- **💰 Organizer Custom UPI / QR Setup:** Event creators can configure their own UPI ID (e.g. `creator@okhdfcbank`, `9876543210@paytm`), Payee Account Name, and custom QR Scanner code directly while creating or editing an event.
+- **📲 Direct Payee Checkout:** Attendees pay directly to the organizer's UPI ID or scan the organizer's custom QR code with instant app-switch support (GPay, PhonePe, Paytm).
+- **📜 Transaction & Payment History:** Students and attendees can review their full payment records (Txn ID, Amount, Payment Method, Date/Time, and Status) in the dedicated "Payment History & Receipts" tab.
+- **🎫 Official E-Receipt & Printable Entry Pass:** Verified computer-generated E-Receipt and Entry Ticket with 1-click print / PDF export support.
+- **📈 Organizer Revenue Tracking:** Event organizers can view total revenue earned and collected across all their created campus events.
+
 ### 🔐 Security & Engineering Highlights
 - **JWT (JSON Web Token) Security with 30-day session expiry**
 - **bcryptjs Salted Password Hashing**

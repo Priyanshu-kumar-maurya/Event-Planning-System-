@@ -1,4 +1,4 @@
-﻿/* Payment Modal CSS - Dark Glassmorphism */
+/* Payment Modal CSS - Dark Glassmorphism */
 .payment-modal-backdrop {
   position: fixed;
   top: 0;
@@ -221,6 +221,67 @@
 }
 
 /* Tab 1: UPI & QR */
+.organizer-payee-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.organizer-payee-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.25);
+  color: #c084fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.organizer-payee-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.organizer-payee-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.organizer-payee-name {
+  font-size: 0.92rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+.organizer-upi-tag {
+  font-size: 0.72rem;
+  font-family: monospace;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.organizer-upi-tag.default {
+  color: #94a3b8;
+}
+
+.qr-custom-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
 .upi-pane-grid {
   display: grid;
   grid-template-columns: 140px 1fr;

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   FiShield,
   FiX,
@@ -41,8 +41,13 @@ export default function PaymentModal({
       setIsProcessing(false);
       setError(null);
       setTransactionData(null);
+      if (event?.organizerUpiId) {
+        setUpiId(event.organizerUpiId);
+      } else {
+        setUpiId("");
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, event]);
 
   if (!isOpen || !event) return null;
 
@@ -208,38 +213,66 @@ export default function PaymentModal({
             {/* Tab 1: UPI & QR Code */}
             {method === "upi" && (
               <div className="tab-pane animate-fadeIn">
+                {/* Organizer Payee Banner */}
+                <div className="organizer-payee-banner">
+                  <div className="organizer-payee-badge">
+                    <FiSmartphone />
+                  </div>
+                  <div className="organizer-payee-text">
+                    <span className="organizer-payee-label">Paying Directly to Organizer:</span>
+                    <strong className="organizer-payee-name">
+                      {event.organizerPayeeName || event.organizer || "Event Organizer"}
+                    </strong>
+                    {event.organizerUpiId ? (
+                      <span className="organizer-upi-tag">UPI: {event.organizerUpiId}</span>
+                    ) : (
+                      <span className="organizer-upi-tag default">UPI: campus.events@okhdfcbank</span>
+                    )}
+                  </div>
+                </div>
+
                 <div className="upi-pane-grid">
                   <div className="upi-qr-card">
                     <div className="qr-box">
-                      {/* Stylized simulated QR Code graphic */}
-                      <svg viewBox="0 0 100 100" className="qr-svg-graphic">
-                        <rect width="100" height="100" fill="#ffffff" rx="8" />
-                        <rect x="10" y="10" width="24" height="24" fill="#0f172a" rx="3" />
-                        <rect x="14" y="14" width="16" height="16" fill="#ffffff" rx="2" />
-                        <rect x="18" y="18" width="8" height="8" fill="#0f172a" />
-                        <rect x="66" y="10" width="24" height="24" fill="#0f172a" rx="3" />
-                        <rect x="70" y="14" width="16" height="16" fill="#ffffff" rx="2" />
-                        <rect x="74" y="18" width="8" height="8" fill="#0f172a" />
-                        <rect x="10" y="66" width="24" height="24" fill="#0f172a" rx="3" />
-                        <rect x="14" y="70" width="16" height="16" fill="#ffffff" rx="2" />
-                        <rect x="18" y="74" width="8" height="8" fill="#0f172a" />
-                        {/* Pattern Dots */}
-                        <rect x="42" y="15" width="6" height="6" fill="#7c3aed" />
-                        <rect x="52" y="15" width="6" height="6" fill="#0f172a" />
-                        <rect x="42" y="26" width="6" height="6" fill="#0f172a" />
-                        <rect x="52" y="26" width="6" height="6" fill="#ec4899" />
-                        <rect x="42" y="42" width="16" height="16" fill="#7c3aed" rx="2" />
-                        <rect x="15" y="42" width="6" height="6" fill="#0f172a" />
-                        <rect x="25" y="52" width="6" height="6" fill="#0f172a" />
-                        <rect x="66" y="42" width="6" height="6" fill="#0f172a" />
-                        <rect x="78" y="52" width="6" height="6" fill="#7c3aed" />
-                        <rect x="42" y="68" width="6" height="6" fill="#0f172a" />
-                        <rect x="52" y="78" width="6" height="6" fill="#0f172a" />
-                        <rect x="68" y="68" width="8" height="8" fill="#0f172a" />
-                        <rect x="80" y="78" width="8" height="8" fill="#7c3aed" />
-                      </svg>
+                      {event.organizerQrCode ? (
+                        <img
+                          src={event.organizerQrCode}
+                          alt="Organizer UPI QR Code"
+                          className="qr-custom-img"
+                        />
+                      ) : (
+                        /* Stylized simulated QR Code graphic */
+                        <svg viewBox="0 0 100 100" className="qr-svg-graphic">
+                          <rect width="100" height="100" fill="#ffffff" rx="8" />
+                          <rect x="10" y="10" width="24" height="24" fill="#0f172a" rx="3" />
+                          <rect x="14" y="14" width="16" height="16" fill="#ffffff" rx="2" />
+                          <rect x="18" y="18" width="8" height="8" fill="#0f172a" />
+                          <rect x="66" y="10" width="24" height="24" fill="#0f172a" rx="3" />
+                          <rect x="70" y="14" width="16" height="16" fill="#ffffff" rx="2" />
+                          <rect x="74" y="18" width="8" height="8" fill="#0f172a" />
+                          <rect x="10" y="66" width="24" height="24" fill="#0f172a" rx="3" />
+                          <rect x="14" y="70" width="16" height="16" fill="#ffffff" rx="2" />
+                          <rect x="18" y="74" width="8" height="8" fill="#0f172a" />
+                          {/* Pattern Dots */}
+                          <rect x="42" y="15" width="6" height="6" fill="#7c3aed" />
+                          <rect x="52" y="15" width="6" height="6" fill="#0f172a" />
+                          <rect x="42" y="26" width="6" height="6" fill="#0f172a" />
+                          <rect x="52" y="26" width="6" height="6" fill="#ec4899" />
+                          <rect x="42" y="42" width="16" height="16" fill="#7c3aed" rx="2" />
+                          <rect x="15" y="42" width="6" height="6" fill="#0f172a" />
+                          <rect x="25" y="52" width="6" height="6" fill="#0f172a" />
+                          <rect x="66" y="42" width="6" height="6" fill="#0f172a" />
+                          <rect x="78" y="52" width="6" height="6" fill="#7c3aed" />
+                          <rect x="42" y="68" width="6" height="6" fill="#0f172a" />
+                          <rect x="52" y="78" width="6" height="6" fill="#0f172a" />
+                          <rect x="68" y="68" width="8" height="8" fill="#0f172a" />
+                          <rect x="80" y="78" width="8" height="8" fill="#7c3aed" />
+                        </svg>
+                      )}
                     </div>
-                    <span className="qr-scan-label">Scan with any UPI App</span>
+                    <span className="qr-scan-label">
+                      Scan to Pay ₹{price} to {event.organizerPayeeName || event.organizer || "Organizer"}
+                    </span>
                     <div className="upi-apps-row">
                       <span className="app-badge gpay">GPay</span>
                       <span className="app-badge phonepe">PhonePe</span>

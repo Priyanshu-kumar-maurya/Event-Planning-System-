@@ -112,6 +112,22 @@ const eventSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+    // Organizer payment receiving details (for paid events)
+    organizerUpiId: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    organizerPayeeName: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    organizerQrCode: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     tags: {
       type: [String],
       default: [],
