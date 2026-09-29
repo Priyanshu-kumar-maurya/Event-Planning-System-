@@ -396,7 +396,7 @@ export default function EventDetail() {
                 </div>
                 <h4>Login Required to Participate</h4>
                 <p>
-                  Aapko event mein participate / register karne ke liye login ya sign up karna zaroori hai.
+                  Please log in or create an account to participate and reserve your ticket for this event.
                 </p>
                 <div className="auth-required-btns">
                   <Link to="/login" className="btn-primary" style={{ width: "100%", justifyContent: "center" }}>

@@ -461,28 +461,28 @@ export default function EditEvent() {
                     <span className="receiver-badge">
                       <FiSmartphone /> Organizer Payment Receiving Setup
                     </span>
-                    <h4 className="receiver-title">Aapka Paisa Kisme Aayega? (Receiving Account)</h4>
+                    <h4 className="receiver-title">Payment Receiving Account Details</h4>
                     <p className="receiver-desc">
-                      Jab koi student is event ka ticket buy karega, to payment aapke is UPI ID / Account par transfer hogi.
+                      When attendees purchase tickets for this event, payments will be routed directly to this UPI ID or payee account.
                     </p>
                   </div>
 
                   <div className="form-row">
                     <div className="form-group">
                       <label className="form-label" htmlFor="organizerUpiId">
-                        Aapka UPI ID (GPay / PhonePe / Paytm / BHIM)
+                        Organizer UPI ID (GPay / PhonePe / Paytm / BHIM)
                       </label>
                       <input
                         id="organizerUpiId"
                         name="organizerUpiId"
                         type="text"
                         className="form-input"
-                        placeholder="e.g. 9812345678@paytm ya techclub@okaxis"
+                        placeholder="e.g. 9812345678@paytm or techclub@okaxis"
                         value={form.organizerUpiId}
                         onChange={handleChange}
                       />
                       <span className="input-tip">
-                        💡 Students ko checkout ke time yahi UPI ID aur QR Code dikhega.
+                        💡 Attendees will see this verified UPI ID and QR code during ticket checkout.
                       </span>
                     </div>
 
@@ -495,7 +495,7 @@ export default function EditEvent() {
                         name="organizerPayeeName"
                         type="text"
                         className="form-input"
-                        placeholder="e.g. Tech Club NSUT ya Annu Maurya"
+                        placeholder="e.g. Tech Club NSUT or Annu Maurya"
                         value={form.organizerPayeeName}
                         onChange={handleChange}
                       />
